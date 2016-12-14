@@ -29,10 +29,10 @@ ECHSE is used in the field of (eco-)hydrology and therefore comes with a collect
 The goal of the bigger project is to apply with ECHSE different ways of determining the potential ($et_{pot}$) and the actual evapotranspiration ($et_{act}$).
 These are, as of the date of this documentation:
 \begin{itemize}
-  \item the simple model of \citet{makkink57},
-  \item the equation of Penman \& Monteith \citep{monteith65},
-  \item the FAO equation for reference evaporation,
-  \item the equation of Shuttleworth \& Wallace \citep{shuttleworth85}.
+  \item[--] the simple model of \citet{makkink57},
+  \item[--] the equation of Penman \& Monteith \citep{monteith65},
+  \item[--] the FAO Penman-Monteith equation (``reference evaporation''),
+  \item[--] the equation of Shuttleworth \& Wallace \citep{shuttleworth85}.
 \end{itemize}
 
 The engine-specific names of variables and parameters are written in \verb!fixed-width! whereas the physical symbols of variables, constants and parameters are written in \textit{italics}.
@@ -59,7 +59,7 @@ Within the ECHSE engines, parameters are grouped into the types
 \end{itemize}
 %
 according to their role in the computation process.
-Tab. \ref{tab:varpar} contains an overview of the variables and parameters and whether they are used in the different $et$ models (Makk = Makkink, PM = Penman-Monteith, FAO = FAO reference, SW = Shuttleworth-Wallace model).
+Tab. \ref{tab:varpar} contains an overview of the variables and parameters and whether they are used in the different $et$ models (Makk = Makkink, PM = Penman-Monteith, FAO = FAO Penman-Monteith, SW = Shuttleworth-Wallace model).
 The parameters in this overview are grouped into the types \textsf{paramNum}, \textsf{sharedParamNum}.
 Parameters of the \textsf{inputExt} type can be found together with the actual external input variables.
 
@@ -156,7 +156,7 @@ In chapter \ref{ch:results}, an overview of the estimated parameter values is gi
 
 The \emph{Machoqueira do Grou} area is a 2.500~ha sized woodland in the Santar\'em district, between the towns of Coruche and Foros do Arr$\tilde{\text{a}}$o, Portugal.
 The vegetation is dominated by cork oak trees and grasses.
-Data come from two measurement stations within the woodland, which were set up for measuring eddy covariance data with measurement towers and other meteorological variables.
+A part of the data comes from two measurement stations within the woodland, which were set up for measuring eddy covariance data with measurement towers and other meteorological variables.
 One station is located between trees under the open sky (\emph{Hauptstation}, HS), the other was set up under a cork oak (\emph{Nebenstation A}, NSA).
 The data include net radiation, air temperature, soil moisture content, sensible heat flux, latent heat flux, vapor pressure deficit, and vapor pressure, and were recorded hourly.
 An evaporation flux was determined from energy balance considerations.
@@ -183,9 +183,19 @@ Those include photosynthetically active radiation (PAR), incoming short-wave rad
 
 \chapter{Parameter estimation: methods and results} \label{ch:parest}
 
-\section{Aerodynamic parameters} \label{sec:parest_met}
+\section{Aerodynamic parameters: Portugal} \label{sec:parest_met}
 
 \verb!h_tempMeas!, \verb!h_humMeas!, \verb!h_windMeas!, \verb!res_b!, \verb!drag_coef!, \verb!rough_bare!, \verb!eddy_decay!.
+
+Below the canopy toward the ground, wind speed is assumed to decrease exponentially with a scaling coefficient $n$, called the \textbf{eddy diffusivity decay constant} (\verb!eddy_decay!); more precisely:
+The shearing stress of wind on a horizontal plane is proportional to $\rho \partial u / \partial z$ (where $u$ is the horizontal wind component, $z$ the vertical coordinate, and $\rho$ the density of air) with the proportionality factor $K$.
+$n$ relates the magnitude of $K$ at the canopy height to that at the ground.
+\citet{shuttleworth85} use a value of $n = 2.5$, arguing that it results from the crop specification made by \citet{monteith73} in deriving the above relation.
+However, I did not come to the same conclusion so far.
+Therefore, $n$ has been set to 2.5 for now and would be revised only if sensitivity analysis proved a significant influence on the results.
+
+The \textbf{measurement heights} of \textbf{relative humidity} (\verb!h_humMeas!), \textbf{temperature} (\verb!h_tempMeas!), and \textbf{wind speed} (\verb!h_windMeas!) are known from the measurement setup and are each equal to 2 m.
+
 
 \section{Geographical parameters} \label{sec:parest_geo}
 
@@ -199,13 +209,13 @@ The models employ 3 geographical parameters for calculating the radiation balanc
 
 \subsection{\texttt{emis\_a}, \texttt{emis\_b}: Portugal} \label{ssec:parest_rad_emisportugal}
 
-I chose default values of \verb!emis_a! = 0.34 and \verb!emis_b! = -0.14, as suggested for average conditions by \citet{maidment93}.
+I chose default values of \verb!emis_a! = 0.34 and \verb!emis_b! = $-0.14$, as suggested for average conditions by \citet{maidment93}.
 The values could not be estimated individually because the data from Portugal were not sufficient.
 
 \subsection{\texttt{emis\_a}, \texttt{emis\_b}: Morocco} \label{ssec:parest_rad_emismorocco}
 
 I chose default values of \verb!emis_a! = 0.34 and \verb!emis_b! = -0.14, as suggested for average conditions by \citet{maidment93}.
-The emissivity parameters could not be determined because the data from Morocco were not sufficient.
+The values could not be determined because the data from Morocco were not sufficient.
 
 \subsection{\texttt{f\_day}, \texttt{f\_night}: estimation methods} \label{ssec:parest_rad_fmethods}
 
@@ -316,6 +326,22 @@ These choices proved successful in computing clear-sky radiation that didn't exc
 
 \verb!ext!, \verb!par_stressHum!, \verb!crop_makk!, \verb!crop_faoref!, \verb!res_leaf_min!, \verb!lai!, \verb!cano_height!.
 
+The Makkink crop factor \verb!crop_makk! was estimated from the leaf area index by the affine relation
+\begin{align} \label{eq:cropmakk}
+  \text{Makkink~crop~factor} \approx 0.14 ~ LAI + 0.4
+\end{align}
+%
+with
+\begin{itemize}
+  \item[] $LAI$: leaf area index, in m$^2$ m$^{-2}$.
+\end{itemize}
+%
+This relation was derived in the ECHSE documentation from data of \citet{feddes87} and \citet{ludwig06}.
+
+The FAO crop factor was set to 1.
+This value corresponds to the \emph{reference crop} (well-watered grass of 0.12 m height, 70 s m$^{-1}$ surface resistance, 0.23 albedo).
+Since the FAO Penman-Monteith equation is just a simplification of the Penman-Monteith equation, I preferred using the original Penman-Monteith model for the study cases and using the FAO reference evaporation only for a subsumption of the different models.
+
 %--------------------------------------------------------------------------------
 
 \chapter{Comparison of evapotranspiration models} \label{ch:modelcomp}
@@ -420,4 +446,3 @@ An overview of the parameters is given for the \textsf{paramNum} group (object-s
 %--------------------------------------------------------------------------------
 
 \end{document}
-
