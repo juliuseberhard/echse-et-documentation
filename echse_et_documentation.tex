@@ -66,7 +66,7 @@ Parameters of the \textsf{inputExt} type can be found together with the actual e
 \begin{table}[ht]
   \caption{External input variables, parameters and their usage in the $et$ models.
            For abbreviations, see text.
-           \textbullet: required by engine primarily, (\textbullet): required only in cases when primary input is missing.}
+           \textbullet: required by engine primarily, $\circ$: required only in cases when primary input is missing.}
   \scalebox{0.7}{%
     \begin{tabular*}{0.70\hsize}{cccc|ccc|r}
       \hline
@@ -74,26 +74,26 @@ Parameters of the \textsf{inputExt} type can be found together with the actual e
       Makk          & PM            & FAO           & SW            & PM          & FAO & SW          & ECHSE name \\
       \hline
                     &               &               &               &             &     &             & \textbf{\textsf{inputExt}} \\
-                    & (\textbullet) & (\textbullet) & (\textbullet) &             &     &             & \texttt{alb} \\
+                    & $\circ$       & $\circ$       & $\circ$       &             &     &             & \texttt{alb} \\
       \textbullet   & \textbullet   & \textbullet   & \textbullet   &             &     &             & \texttt{apress} \\
                     & \textbullet   &               & \textbullet   &             &     &             & \texttt{cano\_height} \\
-      (\textbullet) & (\textbullet) & (\textbullet) & (\textbullet) &             &     &             & \texttt{cloud}* \\
-      (\textbullet) & (\textbullet) & (\textbullet) & (\textbullet) &             &     &             & \texttt{doy} \\
-      \textbullet   & \textbullet   & (\textbullet) & \textbullet   &             &     &             & \texttt{glorad} \\
-                    & (\textbullet) & (\textbullet) & (\textbullet) &             &     &             & \texttt{glorad\_max} \\
-      (\textbullet) & (\textbullet) & (\textbullet) & (\textbullet) &             &     &             & \texttt{hour} \\
+      $\circ$       & $\circ$       & $\circ$       & $\circ$       &             &     &             & \texttt{cloud}* \\
+      $\circ$       & $\circ$       & $\circ$       & $\circ$       &             &     &             & \texttt{doy} \\
+      \textbullet   & \textbullet   & $\circ$       & \textbullet   &             &     &             & \texttt{glorad} \\
+                    & $\circ$       & $\circ$       & $\circ$       &             &     &             & \texttt{glorad\_max} \\
+      $\circ$       & $\circ$       & $\circ$       & $\circ$       &             &     &             & \texttt{hour} \\
                     & \textbullet   &               & \textbullet   &             &     &             & \texttt{lai} \\
-                    & (\textbullet) & (\textbullet) & (\textbullet) &             &     &             & \texttt{rad\_long} \\
+                    & $\circ$       & $\circ$       & $\circ$       &             &     &             & \texttt{rad\_long} \\
                     & \textbullet   & \textbullet   & \textbullet   &             &     &             & \texttt{rad\_net} \\
-                    & (\textbullet) & (\textbullet) & \textbullet   &             &     &             & \texttt{rad\_net\_soil} \\
+                    & $\circ$       & $\circ$       & \textbullet   &             &     &             & \texttt{rad\_net\_soil} \\
                     & \textbullet   & \textbullet   & \textbullet   &             &     &             & \texttt{rhum} \\
                     & \textbullet   &               & \textbullet   &             &     &             & \texttt{soilheat} \\
-      (\textbullet) & (\textbullet) & (\textbullet) & (\textbullet) &             &     &             & \texttt{sundur} \\
-      (\textbullet) & (\textbullet) & (\textbullet) & (\textbullet) &             &     &             & \texttt{temp\_max} \\
-      (\textbullet) & (\textbullet) & (\textbullet) & (\textbullet) &             &     &             & \texttt{temp\_min} \\
+      $\circ$       & $\circ$       & $\circ$       & $\circ$       &             &     &             & \texttt{sundur} \\
+      $\circ$       & $\circ$       & $\circ$       & $\circ$       &             &     &             & \texttt{temp\_max} \\
+      $\circ$       & $\circ$       & $\circ$       & $\circ$       &             &     &             & \texttt{temp\_min} \\
       \textbullet   & \textbullet   & \textbullet   & \textbullet   &             &     &             & \texttt{temper} \\
                     &               &               & \textbullet   &             &     &             & \texttt{totalheat} \\
-      (\textbullet) & (\textbullet) & (\textbullet) & (\textbullet) &             &     &             & \texttt{utc\_add} \\
+      $\circ$       & $\circ$       & $\circ$       & $\circ$       &             &     &             & \texttt{utc\_add} \\
                     &               &               &               &             &     &             & \texttt{wc\_vol\_root} \\
                     &               &               &               &             &     &             & \texttt{wc\_vol\_top} \\
                     & \textbullet   & \textbullet   & \textbullet   &             &     &             & \texttt{wind} \\
@@ -102,10 +102,10 @@ Parameters of the \textsf{inputExt} type can be found together with the actual e
                     & \textbullet   &               & \textbullet   &             &     &             & \texttt{bubble} \\
                     &               & \textbullet   &               &             &     &             & \texttt{crop\_faoref} \\
       \textbullet   &               &               &               &             &     &             & \texttt{crop\_makk} \\
-      (\textbullet) & (\textbullet) & (\textbullet) & (\textbullet) &             &     &             & \texttt{elev} \\
+      $\circ$       & $\circ$       & $\circ$       & $\circ$       &             &     &             & \texttt{elev} \\
                     & \textbullet   &               & \textbullet   &             &     &             & \texttt{glo\_half} \\
-      (\textbullet) & (\textbullet) & (\textbullet) & (\textbullet) &             &     &             & \texttt{lat} \\
-                    & (\textbullet) & (\textbullet) & (\textbullet) &             &     &             & \texttt{lon} \\
+      $\circ$       & $\circ$       & $\circ$       & $\circ$       &             &     &             & \texttt{lat} \\
+                    & $\circ$       & $\circ$       & $\circ$       &             &     &             & \texttt{lon} \\
                     &               &               &               & \textbullet &     & \textbullet & \texttt{par\_stressHum} \\
                     &               &               &               & \textbullet &     & \textbullet & \texttt{pores\_ind} \\
                     & \textbullet   &               & \textbullet   &             &     &             & \texttt{res\_leaf\_min} \\
@@ -119,24 +119,24 @@ Parameters of the \textsf{inputExt} type can be found together with the actual e
       \hline
                     &               &               &               &             &     &             & \textbf{\textsf{sharedParamNum}} \\
       \textbullet   & \textbullet   & \textbullet   & \textbullet   &             &     &             & \texttt{choice\_et} \\
-                    & (\textbullet) & (\textbullet) & (\textbullet) &             &     &             & \texttt{choice\_gloradmax} \\
+                    & $\circ$       & $\circ$       & $\circ$       &             &     &             & \texttt{choice\_gloradmax} \\
                     & \textbullet   &               & \textbullet   &             &     &             & \texttt{choice\_plantDispl} \\
                     & \textbullet   &               & \textbullet   &             &     &             & \texttt{choice\_rcs} \\
                     & \textbullet   &               & \textbullet   &             &     &             & \texttt{choice\_roughLen} \\
                     & \textbullet   &               & \textbullet   &             &     &             & \texttt{drag\_coef} \\
                     &               &               & \textbullet   &             &     &             & \texttt{eddy\_decay} \\
-                    & (\textbullet) & (\textbullet) & (\textbullet) &             &     &             & \texttt{emis\_a} \\
-                    & (\textbullet) & (\textbullet) & (\textbullet) &             &     &             & \texttt{emis\_b} \\
+                    & $\circ$       & $\circ$       & $\circ$       &             &     &             & \texttt{emis\_a} \\
+                    & $\circ$       & $\circ$       & $\circ$       &             &     &             & \texttt{emis\_b} \\
                     & \textbullet   &               & \textbullet   &             &     &             & \texttt{ext} \\
-                    & (\textbullet) & (\textbullet) & \textbullet   &             &     &             & \texttt{f\_day} \\
-                    & (\textbullet) & (\textbullet) & \textbullet   &             &     &             & \texttt{f\_night} \\
-                    & (\textbullet) & (\textbullet) & (\textbullet) &             &     &             & \texttt{fcorr\_a} \\
-                    & (\textbullet) & (\textbullet) & (\textbullet) &             &     &             & \texttt{fcorr\_b} \\
+                    & $\circ$       & $\circ$       & \textbullet   &             &     &             & \texttt{f\_day} \\
+                    & $\circ$       & $\circ$       & \textbullet   &             &     &             & \texttt{f\_night} \\
+                    & $\circ$       & $\circ$       & $\circ$       &             &     &             & \texttt{fcorr\_a} \\
+                    & $\circ$       & $\circ$       & $\circ$       &             &     &             & \texttt{fcorr\_b} \\
                     & \textbullet   &               &               &             &     &             & \texttt{h\_humMeas} \\
                     & \textbullet   &               &               &             &     &             & \texttt{h\_tempMeas} \\
                     & \textbullet   & \textbullet   & \textbullet   &             &     &             & \texttt{h\_windMeas} \\
-      (\textbullet) & (\textbullet) & (\textbullet) & (\textbullet) &             &     &             & \texttt{radex\_a} \\
-      (\textbullet) & (\textbullet) & (\textbullet) & (\textbullet) &             &     &             & \texttt{radex\_b} \\
+      $\circ$       & $\circ$       & $\circ$       & $\circ$       &             &     &             & \texttt{radex\_a} \\
+      $\circ$       & $\circ$       & $\circ$       & $\circ$       &             &     &             & \texttt{radex\_b} \\
                     &               &               & \textbullet   &             &     &             & \texttt{res\_b} \\
                     & \textbullet   &               & \textbullet   &             &     &             & \texttt{rough\_bare} \\
                     &               &               & \textbullet   &             &     &             & \texttt{rss\_a} \\
@@ -158,14 +158,18 @@ The \emph{Machoqueira do Grou} area is a 2.500~ha sized woodland in the Santar\'
 The vegetation is dominated by cork oak trees and grasses.
 A part of the data comes from two measurement stations within the woodland, which were set up for measuring eddy covariance data with measurement towers and other meteorological variables.
 One station is located between trees under the open sky (\emph{Hauptstation}, HS), the other was set up under a cork oak (\emph{Nebenstation A}, NSA).
-The data include net radiation, air temperature, soil moisture content, sensible heat flux, latent heat flux, vapor pressure deficit, and vapor pressure, and were recorded hourly.
+The data include net radiation, air temperature, soil moisture content, sensible heat flux, latent heat flux, vapor pressure deficit, vapor pressure, and wind speed; they were recorded hourly.
 An evaporation flux was determined from energy balance considerations.
 
 Additional meteorological data come from a nearby weather station.
-Those include photosynthetically active radiation (PAR), incoming short-wave radiation, outgoing long-wave radiation, air temperature, relative humidity, rainfall, and atmospheric pressure, and were recorded half-hourly.
+Those include photosynthetically active radiation (PAR), incoming short-wave radiation, outgoing long-wave radiation, air temperature, relative humidity, rainfall, and atmospheric pressure; they were recorded half-hourly.
 
 \subsection{Morocco} \label{ssec:intro_areas_morocco}
 
+The study area is a citrus orchard near the village Ait Cheikh, southwest of Marrakesh, lying in the Haouz plain north of the Atlas mountains \citep{mroos14}.
+The available data contain relative humidity, global radiation, air temperature, wind speed, and latent heat; they were recorded (latent heat: calculated?) half-hourly.
+An evaporation flux was determined from energy balance considerations.
+Additionally, soil data were taken from \citet{mroos14}.
 
 %--------------------------------------------------------------------------------
 
@@ -181,25 +185,36 @@ Those include photosynthetically active radiation (PAR), incoming short-wave rad
 
 %--------------------------------------------------------------------------------
 
-\chapter{Parameter estimation: methods and results} \label{ch:parest}
+\chapter{Parameters: methods and results} \label{ch:parest}
+
+The estimation of aerodynamic parameters, which specify the aerodynamic resistances in the Penman-Monteith and the Shuttleworth-Wallace models, was mostly not possible in the study cases and therefore adopted from the original publications.
+Nevertheless, the origins of the used values are discussed briefly.
+
+Geographical parameters were easy to estimate or given.
+
+
 
 \section{Aerodynamic parameters: Portugal} \label{sec:parest_met}
-
-\verb!h_tempMeas!, \verb!h_humMeas!, \verb!h_windMeas!, \verb!res_b!, \verb!drag_coef!, \verb!rough_bare!, \verb!eddy_decay!.
 
 Below the canopy toward the ground, wind speed is assumed to decrease exponentially with a scaling coefficient $n$, called the \textbf{eddy diffusivity decay constant} (\verb!eddy_decay!); more precisely:
 The shearing stress of wind on a horizontal plane is proportional to $\rho \partial u / \partial z$ (where $u$ is the horizontal wind component, $z$ the vertical coordinate, and $\rho$ the density of air) with the proportionality factor $K$.
 $n$ relates the magnitude of $K$ at the canopy height to that at the ground.
 \citet{shuttleworth85} use a value of $n = 2.5$, arguing that it results from the crop specification made by \citet{monteith73} in deriving the above relation.
-However, I did not come to the same conclusion so far.
-Therefore, $n$ has been set to 2.5 for now and would be revised only if sensitivity analysis proved a significant influence on the results.
+Although I couldn't reconstruct this value from the second edition \citep{monteith90}, \citet{shuttleworth85} concluded from an sensitivity analysis that the resulting evapotranspiration was hardly influenced by changing $n$.
+Therefore, $n$ has been set to 2.5.
 
-The \textbf{measurement heights} of \textbf{relative humidity} (\verb!h_humMeas!), \textbf{temperature} (\verb!h_tempMeas!), and \textbf{wind speed} (\verb!h_windMeas!) are known from the measurement setup and are each equal to 2 m.
+The \textbf{measurement heights of relative humidity} (\verb!h_humMeas!), \textbf{temperature} (\verb!h_tempMeas!), and \textbf{wind speed} (\verb!h_windMeas!) are known from the measurement setup and each equal to 2~m.
 
+The aerodynamic \textbf{mean boundary layer resistance} $r_b$ (\verb!res_b!) was taken as 25~s~m$^{-1}$ by \citet{shuttleworth85} based on field measurements by \citet{denmead76} and \citet{uchijima76}.
+Like for $n$, the models seem to be quite insensitive for variations of $r_b$ \citep{shuttleworth85}, and $r_b$ was set to 25~s~m$^{-1}$.
 
-\section{Geographical parameters} \label{sec:parest_geo}
+In the calculation of the aerodynamic resistance between canopy and reference level, the displacement height of the vegetation and the roughness lengths of the crop for latent and sensible heat fluxes are used (see section \ref{sec:parest_veg} for these parameters).
+Following \citet{shuttleworth90}, both of these are dependent on the \textbf{roughness length of the bare substrate} $z_0$ (\verb!rough_bare!) and the effective mean \textbf{drag coefficient of the vegetation} $c_d$ (\verb!drag_coef!) as well as on the leaf area index and the canopy height (see section \ref{sec:parest_veg}).
+The values of $z_0$ and $c_d$ were numerically estimated by the authors and adopted here as 0.01~m and 0.07, respectively.
 
-The models employ 3 geographical parameters for calculating the radiation balance: latitude $\varphi$ (\verb!lat!), longitude $L_m$ (\verb!lon!), elevation $h$ (\verb!elev!). For the sites in Portugal, the locations were given as GIS data from which I could derive \verb!lat! $= 39.14^\circ$ and \verb!lon! $= 8.33^\circ$ for both field stations using \emph{Google Maps}. A common value for \verb!elev! of the Portugal sites was estimated from local elevation maps (floodmap.net). For Morocco, \verb!lat! and \verb!lon! were derived from the location descriptions in \citet{mroos14} while \verb!elev! was also estimated from floodmap.net.
+\section{Geographical parameters: Portugal} \label{sec:parest_geo}
+
+The models employ 3 geographical parameters for calculating the radiation balance: latitude $\varphi$ (\verb!lat!), longitude $L_m$ (\verb!lon!), elevation $h$ (\verb!elev!). For the sites in Portugal, the locations were given as GIS data from which I could derive $\varphi = 39.14 ^\circ$N and $L_m= 8.33 ^\circ$W for both field stations using \emph{Google Maps}. A common value for $h$ of the Portugal sites was estimated from local elevation maps (floodmap.net). For Morocco, $\varphi$ and $L_m$ were derived from the location descriptions in \citet{mroos14} while $h$ was also estimated from floodmap.net.
 
 \section{Radiation parameters} \label{sec:parest_rad}
 
@@ -229,7 +244,7 @@ with
 \begin{itemize}
   \item[] $G_{soil}$: soil heat flux (\verb!soilheat!), in W m$^{-2}$,
   \item[] $f_{day}$, $f_{night}$: soil heat factors (\verb!f_day!, \verb!f_night!), no unit,
-  \item[] $R_{net}$: net incoming short-wave and long-wave radiation (\verb!rad_net!), in W m$s^{-2}$.
+  \item[] $R_{net}$: net incoming short-wave and long-wave radiation (\verb!rad_net!), in W m$^{-2}$.
 \end{itemize}
 
 \subsection{\texttt{f\_day}, \texttt{f\_night}: Portugal} \label{ssec:parest_rad_fportugal}
