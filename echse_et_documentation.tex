@@ -1,31 +1,44 @@
 \documentclass{scrreprt}
 
+% packages
 \usepackage{amsmath}
+%\usepackage{enumitem}
 \usepackage[margin=0.8in]{geometry}
 \usepackage{graphics}
 \usepackage{graphicx}
 \usepackage[round]{natbib}
 \usepackage{pst-node}
+
+% settings
 \bibliographystyle{plainnat}
+\setkomafont{sectioning}{\normalfont\bfseries}
+%\setlist[itemize]{noitemsep}
+\newenvironment{denseitem}{
+  \begin{itemize}
+    \setlength{\itemsep}{0pt}
+    \setlength{\parskip}{0pt}
+    \setlength{\parsep}{0pt}
+}{
+  \end{itemize}
+}
 
 \title{Evapotranspiration Modeling in ECHSE: Documentation}
 \author{Julius Eberhard}
 
-%--------------------------------------------------------------------------------
-%--------------------------------------------------------------------------------
+%::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
 \begin{document}
 
 \maketitle
 \tableofcontents
 
-%--------------------------------------------------------------------------------
+%................................................................................
 
 \chapter{Introduction} \label{ch:introduction}
 
 This is a documentation of my work done in exploring some aspects of the way how evapotranspiration is simulated in the \emph{Eco-Hydrological Simulation Environment} (ECHSE, \citealt{kneis15}) with methods, classes, and engines written by Tobias Pilz.
 ECHSE is a model framework, i.e. a software providing calculation methods that can be composed modularly to form model engines. These engines can be compiled and be run as independent models with input data.
-ECHSE is used in the field of (eco-)hydrology and therefore comes with a collection of methods especially relevant for issues in this field.
+ECHSE is used in the field of (eco-) hydrology and therefore comes with a collection of methods especially relevant for issues in this field.
 The goal of the bigger project is to apply with ECHSE different ways of determining the potential ($et_{pot}$) and the actual evapotranspiration ($et_{act}$).
 These are, as of the date of this documentation:
 \begin{itemize}
@@ -154,11 +167,11 @@ In chapter \ref{ch:results}, an overview of the estimated parameter values is gi
 
 \subsection{Portugal} \label{ssec:intro_areas_portugal}
 
-The \emph{Machoqueira do Grou} area is a 2.500~ha sized woodland in the Santar\'em district, between the towns of Coruche and Foros do Arr$\tilde{\text{a}}$o, Portugal.
+The \emph{Machoqueira do Grou} area is a 2,500~ha sized woodland in the Santar\'em district, between the towns of Coruche and Foros do Arr$\tilde{\text{a}}$o, Portugal.
 The vegetation is dominated by cork oak trees and grasses.
-A part of the data comes from two measurement stations within the woodland, which were set up for measuring eddy covariance data with measurement towers and other meteorological variables.
+A part of the data comes from two measurement stations within the woodland, which were set up for recording eddy covariance data with measurement towers and other meteorological variables.
 One station is located between trees under the open sky (\emph{Hauptstation}, HS), the other was set up under a cork oak (\emph{Nebenstation A}, NSA).
-The data include net radiation, air temperature, soil moisture content, sensible heat flux, latent heat flux, vapor pressure deficit, vapor pressure, and wind speed; they were recorded hourly.
+The data include net total radiation, air temperature, soil moisture content, sensible heat flux, latent heat flux, vapor pressure deficit, vapor pressure, and wind speed; they were recorded hourly.
 An evaporation flux was determined from energy balance considerations.
 
 Additional meteorological data come from a nearby weather station.
@@ -171,7 +184,7 @@ The available data contain relative humidity, global radiation, air temperature,
 An evaporation flux was determined from energy balance considerations.
 Additionally, soil data were taken from \citet{mroos14}.
 
-%--------------------------------------------------------------------------------
+%................................................................................
 
 \chapter{Aims} \label{ch:aims}
 
@@ -183,133 +196,253 @@ Additionally, soil data were taken from \citet{mroos14}.
   \item[--] Which input data do we still need? (chapter \ref{ch:conclusion})
 \end{itemize}
 
-%--------------------------------------------------------------------------------
+%................................................................................
 
 \chapter{Parameters: methods and results} \label{ch:parest}
 
-The estimation of aerodynamic parameters, which specify the aerodynamic resistances in the Penman-Monteith and the Shuttleworth-Wallace models, was mostly not possible in the study cases and therefore adopted from the original publications.
-Nevertheless, the origins of the used values are discussed briefly.
+The estimation of \textbf{aerodynamic parameters}, which specify the aerodynamic resistances in the PM and the SW models, was mostly not possible in the study cases and therefore adopted from the original publications.
+Nevertheless, the origins of the values are discussed briefly (Sec.~\ref{sec:parest_aero}).
 
-Geographical parameters were easy to estimate or given.
+\textbf{Geographical parameters} were given or easy to estimate from map services (Sec.~\ref{sec:parest_geo}).
 
+\textbf{Radiation parameters} were partly estimated from observations of radiation components at the study sites and are discussed more extensively (Sec.~\ref{sec:parest_rad}).
 
+Two pedotransfer functions (PTF) were used to estimate \textbf{soil hydraulic parameters} from the measured soil properties, namely bulk density, mass portions of silt and clay, and organic matter content (Sec.~\ref{sec:parest_soil}).
 
-\section{Aerodynamic parameters: Portugal} \label{sec:parest_met}
+All \textbf{vegetation parameters} were adapted from other publications or estimated through model calibration (Sec. \ref{sec:parest_veg}).
+They are discussed in separate sections to specify the problems and possibilities relevant for their determination.
+
+Where parameters appear in their own sections, the discussion follows the outline \emph{Basics -- Methods -- Notes -- Portugal -- Morocco}.
+
+\section{Aerodynamic parameters} \label{sec:parest_aero}
 
 Below the canopy toward the ground, wind speed is assumed to decrease exponentially with a scaling coefficient $n$, called the \textbf{eddy diffusivity decay constant} (\verb!eddy_decay!); more precisely:
 The shearing stress of wind on a horizontal plane is proportional to $\rho \partial u / \partial z$ (where $u$ is the horizontal wind component, $z$ the vertical coordinate, and $\rho$ the density of air) with the proportionality factor $K$.
 $n$ relates the magnitude of $K$ at the canopy height to that at the ground.
 \citet{shuttleworth85} use a value of $n = 2.5$, arguing that it results from the crop specification made by \citet{monteith73} in deriving the above relation.
-Although I couldn't reconstruct this value from the second edition \citep{monteith90}, \citet{shuttleworth85} concluded from an sensitivity analysis that the resulting evapotranspiration was hardly influenced by changing $n$.
+Although I couldn't reconstruct this value from the second edition of Monteith's book \citep{monteith90}, \citet{shuttleworth85} concluded from an sensitivity analysis that the resulting evapotranspiration was hardly influenced by changing $n$.
 Therefore, $n$ has been set to 2.5.
 
 The \textbf{measurement heights of relative humidity} (\verb!h_humMeas!), \textbf{temperature} (\verb!h_tempMeas!), and \textbf{wind speed} (\verb!h_windMeas!) are known from the measurement setup and each equal to 2~m.
 
 The aerodynamic \textbf{mean boundary layer resistance} $r_b$ (\verb!res_b!) was taken as 25~s~m$^{-1}$ by \citet{shuttleworth85} based on field measurements by \citet{denmead76} and \citet{uchijima76}.
-Like for $n$, the models seem to be quite insensitive for variations of $r_b$ \citep{shuttleworth85}, and $r_b$ was set to 25~s~m$^{-1}$.
+Like for $n$, the models seem to be quite insensitive for variations of $r_b$ \citep{shuttleworth85}, and $r_b$ has been set to 25~s~m$^{-1}$.
 
-In the calculation of the aerodynamic resistance between canopy and reference level, the displacement height of the vegetation and the roughness lengths of the crop for latent and sensible heat fluxes are used (see section \ref{sec:parest_veg} for these parameters).
-Following \citet{shuttleworth90}, both of these are dependent on the \textbf{roughness length of the bare substrate} $z_0$ (\verb!rough_bare!) and the effective mean \textbf{drag coefficient of the vegetation} $c_d$ (\verb!drag_coef!) as well as on the leaf area index and the canopy height (see section \ref{sec:parest_veg}).
-The values of $z_0$ and $c_d$ were numerically estimated by the authors and adopted here as 0.01~m and 0.07, respectively.
+In the calculation of the aerodynamic resistance between canopy and reference level, the displacement height of the vegetation and the roughness lengths for latent and sensible heat fluxes of the vegetation are used (see Sec. \ref{sec:parest_veg} for these parameters).
+Following \citet{shuttleworth90}, both of these are dependent on the \textbf{roughness length of the bare substrate} $z_0$ (\verb!rough_bare!) and the effective mean \textbf{drag coefficient of the vegetation} $c_d$ (\verb!drag_coef!) as well as on the leaf area index and the canopy height (Sec. \ref{sec:parest_veg}).
+The values of $z_0$ and $c_d$ were numerically estimated by the authors and are adopted here as 0.01~m and 0.07, respectively.
 
-\section{Geographical parameters: Portugal} \label{sec:parest_geo}
+All values were employed for both Portugal and Morocco because the aerodynamic conditions are similar.
 
-The models employ 3 geographical parameters for calculating the radiation balance: latitude $\varphi$ (\verb!lat!), longitude $L_m$ (\verb!lon!), elevation $h$ (\verb!elev!). For the sites in Portugal, the locations were given as GIS data from which I could derive $\varphi = 39.14 ^\circ$N and $L_m= 8.33 ^\circ$W for both field stations using \emph{Google Maps}. A common value for $h$ of the Portugal sites was estimated from local elevation maps (floodmap.net). For Morocco, $\varphi$ and $L_m$ were derived from the location descriptions in \citet{mroos14} while $h$ was also estimated from floodmap.net.
+\section{Geographical parameters} \label{sec:parest_geo}
+
+Each model employs 3 or less geographical parameters for calculating the radiation balance: \textbf{latitude} $\varphi$ (\verb!lat!), \textbf{longitude} $L_m$ (\verb!lon!), \textbf{elevation} $h$ (\verb!elev!).
+For the sites in Portugal, the locations were given as UTM coordinates (HS: 557,640.5~m easting, 4,332,523.5~m northing; NSA: 557,717.0~m easting, 4,332,408.0~m northing; both in UTM zone~29S) from which I could derive $\varphi = 39.14^\circ$~N and $L_m= 8.33^\circ$~W for both field stations.
+The actual distance of 139~m between the stations corresponds to less than $0.01^\circ$ and was therefore taken as 0.
+A common value for $h$ of the Portugal sites was estimated from local elevation maps (\emph{floodmap.net}) as 160~m above sea level.
+
+For Morocco, $\varphi = 31.50^\circ$~N, $L_m = 8.14^\circ$~W, and $h = 464$~m~a.s.l. were taken from \citet{mroos14}.
 
 \section{Radiation parameters} \label{sec:parest_rad}
 
-\subsection{\texttt{alb}} \label{ssec:parest_rad_alb}
+\subsection{Albedo (\texttt{alb})} \label{ssec:parest_rad_alb}
 
-\subsection{\texttt{emis\_a}, \texttt{emis\_b}: estimation methods} \label{ssec:parest_rad_emismethods}
+\textbf{Basics.}
+The albedo $\mu$ (\verb!alb!) is defined as
+\begin{align*}
+  \mu = \frac{R_{inS}}{R_{outS}}
+\end{align*}
+%
+with
+\begin{denseitem}
+  \item[] $R_{inS}$: incoming short-wave radiation (\verb!glorad!), in W~m$^{-2}$,
+  \item[] $R_{outS}$: outgoing short-wave radiation, in W~m$^{-2}$.
+\end{denseitem}
 
-\subsection{\texttt{emis\_a}, \texttt{emis\_b}: Portugal} \label{ssec:parest_rad_emisportugal}
+\textbf{Method.}
+It can be estimated from observations of $R_{inS}$ and $R_{outS}$ or from literature values for various land surfaces.
+The albedo of a surface can change over time and is supplied as a time series in ECHSE.
 
-I chose default values of \verb!emis_a! = 0.34 and \verb!emis_b! = $-0.14$, as suggested for average conditions by \citet{maidment93}.
-The values could not be estimated individually because the data from Portugal were not sufficient.
+\textbf{Portugal, Morocco.} None of the measurements did include $R_{outS}$ data, so both the albedos in Portugal and Morocco have been estimated as constantly 0.3, judging by the descriptions of the surfaces.
+These are likely to have $0.25 < \mu < 0.4$, where 0.25 is the albedo of green grass \citep{markvart03} and 0.4 that of dry sand \citep{tetzlaff83}.
 
-\subsection{\texttt{emis\_a}, \texttt{emis\_b}: Morocco} \label{ssec:parest_rad_emismorocco}
+\subsection{Emissivity parameters (\texttt{emis\_a}, \texttt{emis\_b})} \label{ssec:parest_rad_emis}
 
-I chose default values of \verb!emis_a! = 0.34 and \verb!emis_b! = -0.14, as suggested for average conditions by \citet{maidment93}.
-The values could not be determined because the data from Morocco were not sufficient.
-
-\subsection{\texttt{f\_day}, \texttt{f\_night}: estimation methods} \label{ssec:parest_rad_fmethods}
-
-Within the ECHSE engines, the sub-daily soil heat flux is currently calculated as
-\begin{align}
-  G_{soil} &= f_{day} R_{net} ~ \text{during daytime}, \label{eq:F1} \\
-  G_{soil} &= f_{night} R_{net} ~ \text{during nighttime}. \label{eq:F2}
+\textbf{Basics.}
+Emissivity is a property of a macroscopic body (fluid or solid) and gives the portion of radiation that the body emits compared with a black body at the same temperature.
+There are two methods for calculating the net emissivity $\varepsilon$ between Earth's surface and atmosphere in ECHSE, either from water vapor pressure (Eq.~\ref{eq:emis1}) or from air temperature (Eq.~\ref{eq:emis3}).
+The first method includes the emissivity parameters $\varepsilon_a$, $\varepsilon_b$ (\verb!emis_a!, \verb!emis_b!), which represent the average environmental effects (such as surface and climate) on $\varepsilon$ at a certain location:
+\begin{align} \label{eq:emis1}
+  \varepsilon = \varepsilon_a + \varepsilon_b \sqrt{e}
 \end{align}
 %
 with
-\begin{itemize}
-  \item[] $G_{soil}$: soil heat flux (\verb!soilheat!), in W m$^{-2}$,
+\begin{denseitem}
+  \item[] $\varepsilon$: net emissivity, no unit,
+  \item[] $\varepsilon_a$: emissivity parameter a, no unit,
+  \item[] $\varepsilon_b$: emissivity parameter b, in hPa$^{-1/2}$,
+  \item[] $e$: water vapor pressure in air, in hPa.
+\end{denseitem}
+%
+$e$ is derived from measurements of the air temperature and the relative humidity.
+$\varepsilon$ itself is used in ECHSE for the calculation of the net incoming long-wave radiation:
+\begin{align} \label{eq:emis2}
+  L_n = -f \varepsilon \sigma (TA + 273.15~\text{K})^4
+\end{align}
+%
+with
+\begin{denseitem}
+  \item[] $L_n$: net incoming long-wave radiation, in W~m$^{-2}$~K$^{-4}$,
+  \item[] $f$: cloudiness correction factor (Sec.~\ref{ssec:parest_rad_fcorr}), no unit,
+  \item[] $\varepsilon$: net emissivity between ground and atmosphere, no unit,
+  \item[] $\sigma$: Stefan-Boltzmann constant, $5.670373 \times 10^{-8}$~W~m$^{-2}$~K$^{-4}$,
+  \item[] ${TA}$: mean air temperature, in $^\circ$C.
+\end{denseitem}
+
+\textbf{Method.}
+The parameters $\varepsilon_a$, $\varepsilon_b$ can be estimated through Eqs.~\eqref{eq:emis2} and \eqref{eq:emis1} if sufficient data of $L_n$, $TA$, $e$, and $f$ are available.
+
+\textbf{Note.}
+The second method for calculating $\varepsilon$ uses air temperature as the only predictor for $\varepsilon$ without the need of $\varepsilon_a$, $\varepsilon_b$, $e$ \citep{maidment93}:
+\begin{align} \label{eq:emis3}
+  \varepsilon = -0.02 + 0.261 \exp(-7.77 \times 10^{-4} TA^2)
+\end{align}
+%
+(Derivation? $\rightarrow$ \citet{maidment93}, ref. 53)
+It seems that Eq.~\eqref{eq:emis1} is the more suitable choice if $e$ is known since it lets the user implement more of the specific environmental conditions at a study site through the emissivity parameters.
+However, if $\varepsilon_a$ and $\varepsilon_b$ can't be determined as explained and both $e$ and $TA$ data are available, the question is whether it is better to use Eq.~\eqref{eq:emis1} with average-condition values from \citet{maidment93} or Eq.~\eqref{eq:emis3}.
+In ECHSE, Eq.~\eqref{eq:emis1} is preferred as soon as any $e$ data are given as an input and thereby follows the recommendation of \citet{maidment93}.
+As can be seen in Sec.~\ref{ssec:parest_rad_fcorr}, the cloudiness correction factor $f$ is determined by two parameters ($f_a$, $f_b$), which need to be supplied by the user.
+Their estimation is possible only through the use of Eq.~\eqref{eq:emis2}, thus dependent on $\varepsilon$ data.
+This means that a well-founded calculation of the emissivity is the requirement for a good estimation of $f_a$ and $f_b$.
+And as both $\varepsilon$ and $f$ are highly empirical factors, ... (\emph{Herleitungen in Maidment \"uberpr\"ufen, dann entscheiden.})
+
+\textbf{Portugal.}
+I chose default values of $\varepsilon_a = 0.34$ and $\varepsilon_b = -0.14$, as suggested for average conditions by \citet{maidment93}.
+The values could not be estimated specifically because data of the incoming long-wave radiation were missing.
+
+\textbf{Morocco.}
+As for Portugal, I chose $\varepsilon_a = 0.34$ and $\varepsilon_b = -0.14$.
+The values could not be estimated specifically because data of the net long-wave radiation were missing.
+
+\subsection{Soil heat factors (\texttt{f\_day}, \texttt{f\_night})} \label{ssec:parest_rad_f}
+
+\textbf{Basics.}
+Within the ECHSE engines, the sub-daily soil heat flux is currently calculated as
+\begin{align}
+  G_{soil} &= f_{day} R_{net} ~ \text{during daytime}, \label{eq:f1} \\
+  G_{soil} &= f_{night} R_{net} ~ \text{during nighttime}. \label{eq:f2}
+\end{align}
+%
+with
+\begin{denseitem}
+  \item[] $G_{soil}$: soil heat flux (\verb!soilheat!), in W~m$^{-2}$,
   \item[] $f_{day}$, $f_{night}$: soil heat factors (\verb!f_day!, \verb!f_night!), no unit,
-  \item[] $R_{net}$: net incoming short-wave and long-wave radiation (\verb!rad_net!), in W m$^{-2}$.
-\end{itemize}
+  \item[] $R_{net}$: net incoming short-wave and long-wave radiation (\verb!rad_net!), in W~m$^{-2}$.
+\end{denseitem}
 
-\subsection{\texttt{f\_day}, \texttt{f\_night}: Portugal} \label{ssec:parest_rad_fportugal}
-
-Since the data didn't include measurements of $R_{net}$, I used the results of internally calculated values of $R_{net}$ and measurements of $G_{soil}$ for calculating $f_{day}$, $f_{night}$ hourly.
-The distinction into daytime and nighttime was made using the \emph{RAtmosphere::suncalc} procedure by Gionata Biavati.
+\textbf{Portugal.}
+Since the data didn't include measurements of $R_{net}$, I used the results of internally calculated values of $R_{net}$ and measurements of $G_{soil}$ for calculating $f_{day}$, $f_{night}$ hourly from Eqs. \eqref{eq:f1}, \eqref{eq:f2}.
+The distinction of the time series into daytime and nighttime was made using the \emph{RAtmosphere::suncalc} procedure by Gionata Biavati, which provided sunrise and sunset times for the study site.
 Averaging over all hours gave the results.
 
-\subsection{\texttt{f\_day}, \texttt{f\_night}: Morocco} \label{ssec:parest_rad_fmorocco}
+\textbf{Morocco.}
+---
 
-\subsection{\texttt{fcorr\_a}, \texttt{fcorr\_b}: estimation methods} \label{ssec:parest_rad_fcorrmethods}
+\subsection{Cloudiness correction parameters (\texttt{fcorr\_a}, \texttt{fcorr\_b})} \label{ssec:parest_rad_fcorr}
 
-\subsection{\texttt{fcorr\_a}, \texttt{fcorr\_b}: Portugal} \label{ssec:parest_rad_fcorrportugal}
+\textbf{Basics.}
+The cloudiness correction parameters $f_a$, $f_b$ (\verb!fcorr_a!, \verb!fcorr_b!) appear as the slope and the intersect parameters of the affine relationship between the cloudiness correction factor $f$ and the relative actual global radiation:
+\begin{align} \label{eq:fcorr1}
+  f = f_a \frac{R_{inS}}{R_{inS,cs}} + f_b
+\end{align}
+%
+with
+\begin{denseitem}
+  \item[] $f_a$, $f_b$: cloudiness correction parameters, no unit,
+  \item[] $R_{inS}$: actual incoming short-wave radiation (\verb!glorad!), in W~m$^{-2}$,
+  \item[] $R_{inS,cs}$: maximum possible (``clear-sky'') incoming short-wave radiation, in W~m$^{-2}$.
+\end{denseitem}
+%
+$f$ itself is used in ECHSE for the calculation of the net incoming long-wave radiation, i.e. Eq.~\eqref{eq:emis2}:
+\begin{align*}
+  L_n = -f \varepsilon \sigma (TA + 273.15~\text{K})^4
+\end{align*}
+%
+with
+\begin{denseitem}
+  \item[] $L_n$: net incoming long-wave radiation, in W~m$^{-2}$~K$^{-4}$,
+  \item[] $\varepsilon$: net emissivity between atmosphere and ground (Sec.~\ref{ssec:parest_rad_emis}), no unit,
+  \item[] $\sigma$: Stefan-Boltzmann constant, $5.670373 \times 10^{-8}$~W~m$^{-2}$~K$^{-4}$,
+  \item[] $TA$: mean air temperature, in $^\circ$C.
+\end{denseitem}
 
-The cloudiness correction factors could not be determined because the data from Portugal were not sufficient.
+\textbf{Method.}
+The parameters can be estimated from Eq.~\eqref{eq:emis2} if sufficient data of $L_n$, $\varepsilon$, $TA$, $R_{inS}$, and $R_{inS,cs}$ are available.
 
-\subsection{\texttt{fcorr\_a}, \texttt{fcorr\_b}: Morocco} \label{ssec:parest_rad_fcorrmorocco}
+\textbf{Portugal.}
+The cloudiness correction parameters could not be determined because the data from Portugal were not sufficient.
+Observations of net long-wave radiation and individual estimations of net emissivity were missing and would have been necessary to make a good estimation.
+Missing data of clear-sky radiation, however, could have been derived from actual global radiation data.
+I applied the values for arid areas from \citet{maidment93} (p. 4.8), $f_a = 1.35$, $f_b = -0.35$.
 
-The cloudiness correction factors could not be determined because the data from Morocco were not sufficient.
+\textbf{Morocco.}
+The cloudiness correction parameters could not be determined because the data from Morocco were not sufficient.
+Observations of net long-wave radiation and individual estimations of net emissivity were missing and would have been necessary to make a good estimation.
+Missing data of clear-sky radiation, however, could have been derived from actual global radiation data.
+I applied the values for arid areas from \citet{maidment93} (p. 4.8), $f_a = 1.35$, $f_b = -0.35$.
 
-\subsection{\texttt{glo\_half}} \label{ssec:parest_rad_glohalf}
+\subsection{{\AA}ngstr\"om parameters (\texttt{radex\_a}, \texttt{radex\_b})} \label{ssec:parest_rad_radex}
 
-\subsection{\texttt{radex\_a}, \texttt{radex\_b}: estimation methods} \label{ssec:parest_rad_radexmethods}
-
+\textbf{Basics.}
 The estimation of the {\AA}ngstr\"om parameters is based on the equation
-\begin{align} \label{eq:R1}
+\begin{align} \label{eq:radex1}
   \langle R_{inS} \rangle = \left (  a_s + b_s \frac{n}{N} \right ) \langle R_{ex} \rangle,
 \end{align}
 %
 with
-\begin{itemize}
+\begin{denseitem}
+  \item[] $\langle \cdot \rangle$: daily mean of $\cdot$,
   \item[] $R_{inS}$: incoming short-wave radiation (global radiation, \verb!glorad!), in W m$^{-2}$,
   \item[] $R_{ex}$: extraterrestrial short-wave radiation (\verb!radex!), in W m$^{-2}$,
   \item[] $a_s$, $b_s$: {\AA}ngstr\"om parameters (\verb!radex_a!, \verb!radex_b!), no unit,
-  \item[] $n$: sunshine duration of current day (time for which $\langle R_{inS} \rangle \geq 120~\text{W~m}^2$, \verb!sundur!), in hours,
+  \item[] $n$: sunshine duration of current day (time for which $\langle R_{inS} \rangle \geq 120~\text{W~m}^{-2}$, \verb!sundur!), in hours,
   \item[] $N$: maximum possible sunshine duration, in hours.
-\end{itemize}
+\end{denseitem}
 
-Since $R_{ex}$ and $N$ are calculated internally, the uncertainty of the estimation should only depend on the observed global radiation (by definition, $n$ follows from $R_{inS}$).
+\textbf{Method 1.}
+Since $R_{ex}$ and $N$ are calculated internally and astronomically based, the uncertainty of the estimation through Eq.~\eqref{eq:radex1} should only depend on the observed global radiation (by definition, $n$ follows from $R_{inS}$).
 Note that the equation as written represents only daily mean values of $R_{inS}$:
 The parameters are weighted depending on the daily ratio $n/N$ in order to account for cloudiness.
-Thus,
+Two special cases are therefore
 \begin{align}
-  a_s + b_s &= \frac{R_{inS}}{R_{ex}} \text{ on days when } n=N, \label{eq:R2} \\
-  a_s &= \frac{R_{inS}}{R_{ex}} \text{ on days when } n=0. \label{eq:R3}
+  a_s + b_s &= \frac{\langle R_{inS} \rangle}{\langle R_{ex} \rangle} \text{ on days when } n=N, \label{eq:radex2} \\
+  a_s &= \frac{\langle R_{inS} \rangle}{\langle R_{ex} \rangle} \text{ on days when } n=0. \label{eq:radex3}
 \end{align}
-
-In both cases the parameters can be found for any given day with known values of $n$ and $R_{inS}$.
+%
+If observations for either of these cases are available, Eqs.~\eqref{eq:radex1} \& \eqref{eq:radex2} or Eqs.~\eqref{eq:radex1} \& \eqref{eq:radex3} form a system of linear equations, i.e. the unknown parameters $a_s$, $b_s$ can be found for any given day with known values of $n$ and $R_{inS}$.
 Averaging over all days would then determine the parameters.
-Problem: It is difficult to find either days when $n=N$ or days when $n=0$.
+Problem: It might be difficult to find either days when $n=N$ or days when $n=0$.
 
+\textbf{Method 2.}
 Another way of estimating $a_s$ and $b_s$ based on shorter time intervals (in our case, hourly) would be
 \begin{align}
-  a_s + b_s &= \max_{h = 1, ..., 24} \left \{ \frac{R_{inS} (h)}{R_{ex} (h)} \right \}, \label{eq:R4} \\
-  a_s &= \min_{h = 1, ..., 24} \left \{ \frac{R_{inS} (h)}{R_{ex} (h)} \right \}. \label{eq:R5}
+  a_s + b_s &= \max_{h = 1, ..., 24} \left \{ \frac{R_{inS} (h)}{R_{ex} (h)} \right \}, \label{eq:radex4} \\
+  a_s &= \min_{h = 1, ..., 24} \left \{ \frac{R_{inS} (h)}{R_{ex} (h)} \right \} \label{eq:radex5}
 \end{align}
-
-For finding unique solutions, both \eqref{eq:R4} and \eqref{eq:R5} need to be determined because the equations are no longer dependent on $n$.
+%
+with
+\begin{denseitem}
+  \item[] $h$: hour of day.
+\end{denseitem}
+%
+For finding unique solutions, both Eqs.~\eqref{eq:radex4} and \eqref{eq:radex5} need to be evaluated because the equations are no longer dependent on $n$.
 The biggest problem of estimating the parameters with subdaily data is that extreme values (max, min) can result from measuring errors and statistical outliers.
-Taking very low quantiles of the $R_{inS}/R_{ex}$ distribution and applying an upper limit for max ($a_s + b_s$ can't be greater than 1) would probably avoid estimating $a_s$ as too low and $b_s$ as too high.
+Taking very low quantiles of the $R_{inS}/R_{ex}$ distribution and applying an upper limit for the max ($a_s + b_s$ can't be greater than 1) would probably avoid estimating $a_s$ as too low and $b_s$ as too high.
 
-\subsection{\texttt{radex\_a}, \texttt{radex\_b}: Portugal} \label{ssec:parest_rad_radexportugal}
-
+\textbf{Portugal.}
 Global radiation was measured hourly at the local weather station in Portugal.
-Therefore I chose to estimate \verb!radex_a! and \verb!radex_b! with \eqref{eq:R4} and \eqref{eq:R5}.
+Therefore I chose to estimate \verb!radex_a! and \verb!radex_b! with Eqs.~\eqref{eq:radex4} and \eqref{eq:radex5}.
 The $R_{inS}/R_{ex}$ ratio was calculcated for daytime hours between 6:00 and 18:00 local time.
 This assured that only radiation between sunrise and sunset was taken into account for all of the simulation period.
 For the determination of reasonable values I chose the lower 5-percentile of the $R_{inS}/R_{ex}$ distribution as the minimum and the maximum value of $\{R_{inS}/R_{ex} < 1\}$ as the maximum over the whole period in which $R_{inS}$ observations were available.
@@ -331,7 +464,8 @@ These choices proved successful in computing clear-sky radiation that didn't exc
   \label{fig:portugal_radex2}
 \end{figure}
 
-\subsection{\texttt{radex\_a}, \texttt{radex\_b}: Morocco} \label{ssec:parest_rad_radexmorocco}
+\textbf{Morocco.}
+---
 
 \section{Soil hydraulic parameters} \label{sec:parest_soil}
 
@@ -341,31 +475,73 @@ These choices proved successful in computing clear-sky radiation that didn't exc
 
 \verb!ext!, \verb!par_stressHum!, \verb!crop_makk!, \verb!crop_faoref!, \verb!res_leaf_min!, \verb!lai!, \verb!cano_height!.
 
-The Makkink crop factor \verb!crop_makk! was estimated from the leaf area index by the affine relation
+The \textbf{Makkink crop factor} (\verb!crop_makk!) was estimated from the leaf area index by the affine relation
 \begin{align} \label{eq:cropmakk}
   \text{Makkink~crop~factor} \approx 0.14 ~ LAI + 0.4
 \end{align}
 %
 with
-\begin{itemize}
+\begin{denseitem}
   \item[] $LAI$: leaf area index, in m$^2$ m$^{-2}$.
-\end{itemize}
+\end{denseitem}
 %
 This relation was derived in the ECHSE documentation from data of \citet{feddes87} and \citet{ludwig06}.
 
-The FAO crop factor was set to 1.
-This value corresponds to the \emph{reference crop} (well-watered grass of 0.12 m height, 70 s m$^{-1}$ surface resistance, 0.23 albedo).
-Since the FAO Penman-Monteith equation is just a simplification of the Penman-Monteith equation, I preferred using the original Penman-Monteith model for the study cases and using the FAO reference evaporation only for a subsumption of the different models.
+The \textbf{FAO crop factor} (\verb!crop_faoref!) was set to 1.
+This value corresponds to the \emph{reference crop} (well-watered grass of 0.12~m height, 70~s~m$^{-1}$ surface resistance, 0.23 albedo).
+Since the FAO Penman-Monteith equation is just a simplification of the Penman-Monteith equation, I preferred using the original PM model for the study cases and using the FAO reference evaporation only for a subsumption of the different models.
 
-%--------------------------------------------------------------------------------
+\subsection{Radiation for half-maximum stomatal conductance (\texttt{glo\_half})} \label{ssec:parest_veg_glohalf}
+
+When using the PM or SW model, the modeler is interested in the bulk surface resistance of a canopy, $r_{cs}$, which is practically not measurable.
+ECHSE provides two ways of calculating $r_{cs}$ from the stomatal resistance of a single average leaf, which is measurable.
+If the user decides to use the formula of \citet{saugier91}, the incoming short-wave radiation at which the stomatal conductance is half of its maximum ($g_{srad}$, \verb!glo_half!) will be needed.
+Note that -- since conductance is equal to inverse resistance -- this parameter corresponds to the global radiation at which the stomatal \emph{resistance} is double of its minimum value.
+In their derivation of the formula, the authors assume that the actual stomatal resistance of a leaf is hyperbolically dependent on the incident short-wave radiation,
+\begin{align}
+  r_{l,act} = r_{l,min} \frac{R_{inS} + g_{srad}}{R_{inS}}
+\end{align}
+%
+with
+\begin{denseitem}
+  \item[] $r_{l,act}$: actual stomatal resistance of one leaf, in s~m$^{-1}$,
+  \item[] $r_{l,min}$: minimum stomatal resistance of one leaf, in s~m$^{-1}$,
+  \item[] $R_{inS}$: incoming short-wave radiation, in W~m$^{-2}$,
+  \item[] $g_{srad}$: short-wave radiation for half-maximum stomatal conductance, in W~m$^{-2}$,
+\end{denseitem}
+%
+and that the radiation inside or under the canopy decreases exponentially as $R_{inS} \exp(-\epsilon LAI)$ with the extinction coefficient $\epsilon$, no unit, and the leaf area index $LAI$, no unit.
+After integrating $r_{l,act}$ over all leaves, the resulting formula reads
+\begin{align}
+  r_{cs} = \epsilon r_{l,act} / \ln \frac{\epsilon R_{inS} + g_{srad}}{\epsilon R_{inS} \exp(-\epsilon LAI) + g_{srad}}.
+\end{align}
+
+The parameter of interest, $g_{srad}$, can be determined by measurements of the stomatal resistance of multiple leaves over a broad range of radiation conditions and is assumed to be specific of a species.
+\citet{saugier91} collected some values,
+\begin{denseitem}
+  \item[--] alfalfa: 180~W~m$^{-2}$ \citep{katerji83},
+  \item[--] sunflower: 200--350~W~m$^{-2}$ \citep{berger73},
+  \item[--] Scots pine: 125~W~m$^{-2}$ \citep{lohammar80} and 150~W~m$^{-2}$ \citep{jarvis81},
+  \item[--] apple tree: 50~W~m$^{-2}$ \citep{warrit80},
+  \item[--] oil palm: 30~W~m$^{-2}$ \citep{dufrene89},
+\end{denseitem}
+%
+which I used for the estimation of $g_{srad}$ through model calibration (?).
+
+
+\subsection{Note on the calculation of the canopy resistance $r_{cs}$} \label{ssec:parest_veg_notercs}
+
+
+
+%................................................................................
 
 \chapter{Comparison of evapotranspiration models} \label{ch:modelcomp}
 
-%--------------------------------------------------------------------------------
+%................................................................................
 
 \chapter{Sensitivity analysis} \label{ch:sensana}
 
-%--------------------------------------------------------------------------------
+%................................................................................
 
 \chapter{Evaluation of ECHSE methods} \label{ch:methodcomp}
 
@@ -426,7 +602,7 @@ Since the FAO Penman-Monteith equation is just a simplification of the Penman-Mo
 \end{figure}
 
 
-%--------------------------------------------------------------------------------
+%................................................................................
 
 \chapter{Results: overview} \label{ch:results}
 
@@ -446,7 +622,7 @@ An overview of the parameters is given for the \textsf{paramNum} group (object-s
 
 \input{portugalNSA_inputExt}
 
-%--------------------------------------------------------------------------------
+%................................................................................
 
 \chapter{Conclusion} \label{ch:conclusion}
 
@@ -454,10 +630,10 @@ An overview of the parameters is given for the \textsf{paramNum} group (object-s
   \item[--] Soil heat flux needs a better model.
 \end{itemize}
 
-%--------------------------------------------------------------------------------
+%................................................................................
 
 \bibliography{../../Tex/jubib}
 
-%--------------------------------------------------------------------------------
+%................................................................................
 
 \end{document}
