@@ -40,20 +40,33 @@ ECHSE is a model framework, i.e. a software providing calculation methods that c
 ECHSE is used in the field of (eco-) hydrology and therefore comes with a collection of methods especially relevant for issues in this field.
 The goal of the bigger project is to apply with ECHSE different models for determining the potential ($et_{pot}$) and the actual evapotranspiration ($et_{act}$).
 These are, as of the date of this documentation:
-\begin{itemize}
-  \item[--] the simple empirical model of \citet{makkink57},
-  \item[--] the half-empirical model of Penman \& Monteith \citep{monteith65},
-  \item[--] the half-empirical model of Penman \& Monteith as simplified by the FAO,
-  \item[--] the half-empirical model of Shuttleworth \& Wallace \citep{shuttleworth85}.
-\end{itemize}
+\begin{denseitem}
+  \item[--] the model of \citet{makkink57},
+  \item[--] the model of Penman and Monteith \citep{monteith65},
+  \item[--] the model of Penman and Monteith as simplified by the FAO \citep{fao98},
+  \item[--] the model of \citet{shuttleworth85}.
+\end{denseitem}
 
 The engine-specific names (identifiers) of variables and parameters are written in \verb!fixed-width! whereas the physical symbols of variables, constants and parameters are written in \textit{italics}.
 E.g., extraterrestrial radiation = $R_{ex}$ = \verb!radex!.
 Terms that describe parts of the ECHSE architecture are written in \textsf{sans-serif}.
 
-\section{Model overview -- parameter overview} \label{sec:intro_overview}
+\section{Overview of models, engines, parameters} \label{sec:intro_overview}
 
-\textbf{The models.}
+\textbf{Models.}
+The physical $et$ models implemented in ECHSE originated from two approaches:
+First, the empirical approach of \citet{makkink57} as simplified by \citet{debruin87} (for applications during the growing season) uses global radiation (explicitly), air pressure (implicitly through the use of the psychrometric `constant'), and temperature (implicitly through the use of the slope of the saturated vapor pressure curve and the psychrometric `constant') as predictors for the potential evapotranspiration.
+Secondly, the consideration of the net energy available for evaporating water from an open water surface was incorporated into earlier empirical findings by Penman and supplemented with the concept of surface and aerodynamical resistances for uniformly vegetated and completely covered ground by \citet{monteith65} to form the Penman-Monteith model.
+For a nice overview of the Makkink (Makk) and the Penman-Monteith (PM) model and how they are theoretically related, see \citet{debruin87}.
+
+The widely used PM formula was later simplified for rough estimates of single crops by the Food and Agriculture Organization of the United States FAO \citep{fao98} (FAO model) and improved for sparse crops by \citet{shuttleworth85} (SW model).
+
+Tab.~\ref{tab:models} gives a very brief overview of the four models.
+It contains keywords describing the way how a type of $et$ is simulated in the respective ECHSE engine.
+\emph{Reference} $et$ quantifies the evapotranspiration from reference surfaces which usually are made of densely growing, clipped grass which always has a sufficient water supply for transpirating at a maximum rate.
+\emph{Potential} $et$ is the maximum possible evapotranspiration from a certain (not necessarily reference) surface which also has no limited water supply.
+\emph{Actual} $et$ takes into account factors that limit the water supply.
+E.g., potential $et$ in the Makk model is calculated by multiplying the reference $et$ with a crop factor while the potential $et$ is multiplied with a soil moisture factor for determining the actual $et$.
 
 %Makkink:
 %\begin{align}
@@ -71,37 +84,44 @@ Terms that describe parts of the ECHSE architecture are written in \textsf{sans-
 %\end{align}
 %
 \begin{table}[ht]
-  \caption{Overview of $et$ models...}
+  \caption{Overview of $et$ models.}
   \centering
   \begin{tabular*}{1.0\hsize}{llll}
-    Model & Reference $et$  & Potential $et$ & Actual $et$ \\
+    Model & Reference $et$  & Potential $et$                             & Actual $et$ \\
     \hline
-    Makk  & Makkink formula & crop factor    & soil moisture factor \\
-    PM    & ---             & PM formula & \\
-    FAO   & FAO PM formula  & crop factor    & soil moisture factor \\
-    SW    & --- & &
+    Makk  & Makkink formula & $\times$ crop factor                       & $\times$ soil moisture factor \\
+    PM    & ---             & PM formula, resistances w/o stress factors & PM, res. w/ stress \\
+    FAO   & FAO formula     & $\times$ crop factor                       & $\times$ soil moisture factor \\
+    SW    & ---             & SW formula, resistances w/o stress factors & SW, res. w/ stress \\
   \end{tabular*}
+  \label{tab:models}
 \end{table}
 
+\textbf{Engines.}
+All possibilities regarding the type of evapotranspiration (potential or actual), the model (Makk, PM, FAO, or SW), and other calculation methods are generally included in one engine.
+The engine requires the user to choose between the possible combinations of methods and follows them through the calculation process.
+Thus it is possible to directly compare the outputs of different methods with the same set of parameters which is supplied by the user.
+
+\textbf{Parameters.}
 The engine parameters can be grouped into
-\begin{itemize}
+\begin{denseitem}
   \item[--] aerodynamic parameters,
   \item[--] geographical parameters,
   \item[--] radiation parameters,
   \item[--] soil hydraulic parameters,
   \item[--] vegetation parameters,
-\end{itemize}
+\end{denseitem}
 %
-according to their physical role, and will be discussed in this order in chapter \ref{ch:parest}.
+according to their physical role, and will be discussed in this order in Ch.~\ref{ch:parest}.
 Within the ECHSE engines, parameters are grouped into the types
-\begin{itemize}
+\begin{denseitem}
   \item[--] \textsf{paramNum} (object-specific scalar parameters),
   \item[--] \textsf{sharedParamNum} (group-specific scalar parameters),
   \item[--] \textsf{inputExt} (group-specific time-dependent scalar parameters treated as external input variables),
-\end{itemize}
+\end{denseitem}
 %
 according to their role in the computation process.
-Tab. \ref{tab:varpar} contains an overview of the variables and parameters and whether they are used in the different $et$ models (Makk = Makkink, PM = Penman-Monteith, FAO = FAO Penman-Monteith, SW = Shuttleworth-Wallace model).
+Tab.~\ref{tab:varpar} contains an overview of the variables and parameters and whether they are used in the different $et$ models.
 The parameters in this overview are grouped into the types \textsf{paramNum}, \textsf{sharedParamNum}.
 Parameters of the \textsf{inputExt} type can be found together with the actual external input variables.
 
@@ -251,12 +271,13 @@ Additionally, soil data were taken from \citet{mroos14}.
 
 \chapter{Aims} \label{ch:aims}
 
+The aims of my work are:
 \begin{itemize}
-  \item[--] Estimation of engine parameters through transfer functions and model calibration (chapter \ref{ch:parest}),
-  \item[--] comparison of the different $et$ models (chapter \ref{ch:modelcomp}),
-  \item[--] sensitivity analysis of engine parameters (chapter \ref{ch:sensana}),
-  \item[--] evaluation of single methods employed in the $et$ models (chapter \ref{ch:methodcomp}).
-  \item[--] Which input data do we still need? (chapter \ref{ch:conclusion})
+  \item[--] the estimation of engine parameters through transfer functions and model calibration (Ch.~\ref{ch:parest}),
+  \item[--] comparison of the different $et$ models (Ch.~\ref{ch:modelcomp}),
+  \item[--] sensitivity analysis of engine parameters (Ch.~\ref{ch:sensana}),
+  \item[--] evaluation of single methods employed in the $et$ models (Ch.~\ref{ch:methodcomp}).
+  \item[--] Which input data do we still need? (Ch.~\ref{ch:conclusion})
 \end{itemize}
 
 %................................................................................
@@ -533,11 +554,36 @@ These choices proved successful in computing clear-sky radiation that didn't exc
 
 \section{Vegetation parameters} \label{sec:parest_veg}
 
+\subsection{Canopy height (\texttt{cano\_height})} \label{ssec:parest_veg_canoheight}
+
+\textbf{Basics.}
+In the calculation of different aerodynamic resistances, the average canopy height of the vegetation $h_{cano}$ (\verb!cano_height!) is an important parameter.
+The dependent quantities include, among others, the displacement height and the roughness length of the vegetation.
+
+\textbf{Method.}
+The canopy height can be measured in situ or estimated species- and climate-dependently from literature.
+
+\textbf{Portugal.}
+At HS, the predominant species are grasses for which I assumed a mean canopy height of 0.20~m.
+At NSA, the total heights of the surrounding trees were measured.
+The mean is 7.98~m for a sample size of 88 and was used as canopy height.
+
+\subsection{FAO crop factor (\texttt{crop\_faoref})} \label{ssec:parest_veg_cropfaoref}
+
+\textbf{Basics.}
+The modified Penman-Monteith formula as published by the FAO \citep{fao98} gives a rough estimation of the potential evapotranspiration rate without the explicit use of resistances but empirically generalized factors.
+The FAO crop factor (\verb!crop_faoref!), which scales the total $et$ flux, is the only parameter in the equation and specific to a site, i.e. a crop.
+A value of 1 corresponds to the reference crop (well-watered grass of 0.12~m height, 70~s~m$^{-1}$ \citep{fao98} or 69~s~m$^{-1}$ \citep{shuttleworth07} surface resistance, 0.23 albedo), values for other types of vegetation can be looked up online.
+
+\textbf{Portugal, Morocco.}
+The crop factor was set to 1 for reference evapotranspiration.
+Since the FAO equation is just a simplification of the Penman-Monteith equation, I preferred using the original PM model for the study cases and using the FAO reference results only for a subsumption of the different models.
+
 \subsection{Makkink crop factor (\texttt{crop\_makk})} \label{ssec:parest_veg_cropmakk}
 
 \textbf{Basics.}
 The Makkink model expresses a simple empirical relationship between the global radiation, the air temperature, and the potential evapotranspiration of a crop.
-The type of crop is regarded in terms of the Makkink crop factor (\verb!crop_makk!), which scales the $et$ flux compared to that of a \emph{reference crop} (well-watered grass of 0.08--0.13~m height, \citealt{feddes87}).
+The type of crop is regarded in terms of the Makkink crop factor (\verb!crop_makk!), which scales the $et$ flux compared to that of a reference crop (well-watered grass of 0.08--0.13~m height, \citealt{feddes87}).
 
 \textbf{Method.}
 It was estimated from the leaf area index (Sec.~\ref{ssec:parest_veg_lai}) by the affine relation
@@ -555,19 +601,6 @@ This relation was derived in the ECHSE documentation from data of \citet{feddes8
 \textbf{Portugal.}
 
 \textbf{Morocco.}
-
-\subsection{FAO crop factor (\texttt{crop\_faoref})} \label{ssec:parest_veg_cropfaoref}
-
-\textbf{Basics.}
-The modified Penman-Monteith formula as published by the FAO (\url{http://www.fao.org/docrep/X0490E/x0490e00.htm}) gives a rough estimation of the potential evapotranspiration rate without the explicit use of resistances but empirically generalized factors.
-The FAO crop factor (\verb!crop_faoref!), which scales the total $et$ flux, is the only parameter in the equation and specific to a site, i.e. a crop.
-A value of 1 corresponds to the reference crop (well-watered grass of 0.12~m height, 70~s~m$^{-1}$ \citep{unknown} or 69~s~m$^{-1}$ \citep{shuttleworth07} surface resistance, 0.23 albedo), values for other types of vegetation can be looked up online.
-
-\textbf{Portugal, Morocco.}
-The crop factor was set to 1 for reference evapotranspiration.
-Since the FAO equation is just a simplification of the Penman-Monteith equation, I preferred using the original PM model for the study cases and using the FAO reference results only for a subsumption of the different models.
-
-\subsection{Canopy height (\texttt{cano\_height})} \label{ssec:parest_veg_canoheight}
 
 \subsection{Extinction coefficient (\texttt{ext})} \label{ssec:parest_veg_ext}
 
@@ -616,8 +649,7 @@ Since conductance is equal to inverse resistance, $g_{srad}$ corresponds to the 
 \textbf{Note 2.}
 The described approach of \citet{saugier91} was basically applied in the WASA model for semi-arid conditions \citep{guentner02} and is implemented in ECHSE.
 In both cases the minimum resistance of a single leaf in Eq.~\eqref{eq:glohalf2} was replaced by the actual resistance of a single leaf, $r_{l,act}$.
-Although the reason is not yet clear to me, this makes it possible to add additional factors on the stomatal resistance through the preceding calculation of $r_{l,act}$, namely water stress and vapor pressure deficit.
-The absence of other factors in the calculation procedure is discussed shortly in the documentation of ECHSE engines.
+This adaption is justified because $r_{l,act}$, as used in WASA and ECHSE, represents the minimum stomatal resistance regarding all other factors than radiation, which was used as $r_{l,min}$ by \citet{saugier91} for their derivation of Eq.~\eqref{eq:glohalf2}.
 
 \textbf{Note 3.}
 The other method for $r_{cs}$, from \citet{shuttleworth85}, uses the leaf area index as the only predictor.
@@ -625,9 +657,55 @@ It is discussed in the next section since two different versions of the equation
 
 \subsection{Note on the calculation of the canopy resistance $r_{cs}$} \label{ssec:parest_veg_notercs}
 
+Instead of using Eq.~\eqref{eq:glohalf2} from \citet{saugier91}, the canopy stomatal resistance $r_{cs}$ can be estimated simply from the stomatal resistance of a single average leaf in the canopy and the leaf area index (Sec.~\ref{ssec:parest_veg_lai}).
+\citet{shuttleworth76} showed that the canopy stomatal resistance is inversely proportional to the leaf area index and derived the following relationship for a canopy of amphistomatous leaves (e.g. some grasses or conifers, \citealt{shuttleworth85}):
+\begin{align} \label{eq:notercs1}
+  r_{cs} = \frac{\overline{r_{l,act}}}{2 LAI}
+\end{align}
+%
+with
+\begin{denseitem}
+  \item[] $r_{cs}$: canopy stomatal resistance, in s~m$^{-1}$,
+  \item[] $\overline{r_{l,act}}$: actual stomatal resistance of a single average leaf.
+\end{denseitem}
+%
+The factor $1/2$ might come from the consideration of both sides of an amphistomatous leaf when calculating the canopy resistance whereas the resistance of a single leaf is usually measured for one side only.
+However, this is my personal conjecture.
+
+The other version of the above relationship (Eq.~\ref{eq:notercs1}) is
+\begin{align} \label{eq:notercs2}
+  r_{cs} = \frac{\overline{r_{l,act}}}{LAI_{active}} = \frac{\overline{r_{l,act}}}{0.5 LAI}
+\end{align}
+%
+and was published by the FAO (\url{www.fao.org/docrep/X0490E/x0490e06.htm}, Box 5) as an estimate for a reference crop, i.e. clipped, dense-growing grass where only the upper half of the canopy -- expressed as active leaf area index $LAI_{active}$ -- is considered to contribute to mass and heat transport toward the atmosphere \citep{fao98}.
+The underlying assumption in Eq.~\eqref{eq:notercs2} apparently takes into account only one side of the leaves.
+This estimate of a reference canopy resistance was used in the SWAT model.
+
+ECHSE currently employs the ``original'' version of \citet{shuttleworth85} (Eq.~\ref{eq:notercs1}) and there is no good reason yet to use Eq.~\eqref{eq:notercs2} instead.
+(Sensitivity?)
+
 \subsection{Leaf area index (\texttt{lai})} \label{ssec:parest_veg_lai}
 
+\textbf{Basics.}
+Especially in estimating surface resistances of the vegetation and other vegetation parameters, the leaf area index $LAI$ (\verb!lai!) plays an important role.
+It is the average one-sided area of all leaves of a plant that grow above one square meter of the ground.
+
+\textbf{Method.}
+$LAI$ can be measured in situ by collecting all plants from sample sites within the study area.
+Where direct measurements are difficult to realize, $LAI$ can be estimated from data of plant allometry, usage of dry masses and specific leaf area indices, or light measurements.
+
+\textbf{Portugal.}
+For both sites, $LAI$ was measured at 25 sample sites within a square of 25~m side length.
+The results were 0.778 at HS and 1.397 at NSA.
+
+\textbf{Morocco.}
+From the descriptions of the study area, a photograph, and a sketch of a part of the orchard \citep{mroos14}, I could estimate an average $LAI$.
+\citet{jahn79} reported leaf area indices for single citrus trees between 3.7 and 15.1 with a mean of 8.8.
+Using this value for the citrus-covered area, a $LAI$ of 0.5 for the sparsely grass-covered areas between the trees, and a tree cover portion in the area of roughly 0.3 (patterns with one tree of canopy radius 1.5~m per $6 \times 4$~m$^2$ plot), the estimated effective value is $LAI$ = 2.99.
+
 \subsection{(\texttt{par\_stressHum})} \label{ssec:parest_veg_parstresshum}
+
+\textbf{Basics.}
 
 \subsection{(\texttt{res\_leaf\_min})} \label{ssec:parest_veg_resleafmin}
 
