@@ -47,7 +47,7 @@ These are, as of the date of this documentation:
   \item[--] the model of \citet{shuttleworth85}.
 \end{denseitem}
 
-The engine-specific names (identifiers) of variables and parameters are written in \verb!fixed-width! whereas the physical symbols of variables, constants and parameters are written in \textit{italics}.
+The engine-specific names (identifiers) of variables and parameters are written in \verb!fixed-width! whereas the physical symbols of variables, constants, and parameters are written in \textit{italics}.
 E.g., extraterrestrial radiation = $R_{ex}$ = \verb!radex!.
 Terms that describe parts of the ECHSE architecture are written in \textsf{sans-serif}.
 
@@ -59,7 +59,7 @@ First, the empirical approach of \citet{makkink57} as simplified by \citet{debru
 Secondly, the consideration of the net energy available for evaporating water from an open water surface was incorporated into earlier empirical findings by Penman and supplemented with the concept of surface and aerodynamical resistances for uniformly vegetated and completely covered ground by \citet{monteith65} to form the Penman-Monteith model.
 For a nice overview of the Makkink (Makk) and the Penman-Monteith (PM) model and how they are theoretically related, see \citet{debruin87}.
 
-The widely used PM formula was later simplified for rough estimates of single crops by the Food and Agriculture Organization of the United States FAO \citep{fao98} (FAO model) and improved for sparse crops by \citet{shuttleworth85} (SW model).
+The widely used PM formula was later simplified for rough estimates of single crops by the Food and Agriculture Organization of the United Nations FAO \citep{fao98} (FAO model) and improved for sparse crops by \citet{shuttleworth85} (SW model).
 
 Tab.~\ref{tab:models} gives a very brief overview of the four models.
 It contains keywords describing the way how a type of $et$ is simulated in the respective ECHSE engine.
@@ -211,7 +211,7 @@ Parameters of the \textsf{inputExt} type can be found together with the actual e
   \label{tab:varpar}
 \end{table}
 
-In chapter \ref{ch:results}, an overview of the estimated parameter values is given, grouped into the \textsf{paramNum}, \textsf{sharedParamNum}, and \textsf{inputExt} parameter types.
+In Ch.~\ref{ch:results}, an overview of the estimated parameter values is given, grouped into the \textsf{paramNum}, \textsf{sharedParamNum}, and \textsf{inputExt} parameter types.
 
 \section{Study areas -- available data} \label{sec:intro_areas}
 
@@ -234,10 +234,10 @@ The data for both stations include
 \end{denseitem}
 %
 they were recorded hourly.
-An evaporation flux was determined from energy balance considerations.
+An evaporation flux was determined through the use of the Bowen ratio ($\rightarrow$ Taylor \& Ashcroft).
 
 Additional meteorological data come from a nearby weather station.
-Those include
+They include
 \begin{denseitem}
   \item[--] photosynthetically active radiation (PAR),
   \item[--] incoming short-wave radiation,
@@ -274,7 +274,7 @@ Additionally, soil data were taken from \citet{mroos14}.
 The aims of my work are:
 \begin{itemize}
   \item[--] the estimation of engine parameters through transfer functions and model calibration (Ch.~\ref{ch:parest}),
-  \item[--] comparison of the different $et$ models (Ch.~\ref{ch:modelcomp}),
+  \item[--] comparison of the different evapotranspiration models (Ch.~\ref{ch:modelcomp}),
   \item[--] sensitivity analysis of engine parameters (Ch.~\ref{ch:sensana}),
   \item[--] evaluation of single methods employed in the $et$ models (Ch.~\ref{ch:methodcomp}).
   \item[--] Which input data do we still need? (Ch.~\ref{ch:conclusion})
@@ -355,7 +355,7 @@ These are likely to have $0.25 < \mu < 0.4$, where 0.25 is the albedo of green g
 \textbf{Basics.}
 Emissivity is a property of a macroscopic body (fluid or solid) and gives the portion of radiation that the body emits compared with a black body at the same temperature.
 There are two methods for calculating the net emissivity $\varepsilon$ between Earth's surface and atmosphere in ECHSE, either from water vapor pressure (Eq.~\ref{eq:emis1}) or from air temperature (Eq.~\ref{eq:emis3}).
-The first method includes the emissivity parameters $\varepsilon_a$, $\varepsilon_b$ (\verb!emis_a!, \verb!emis_b!), which represent the average environmental effects (such as surface and climate) on $\varepsilon$ at a certain location:
+The first method includes the emissivity parameters $\varepsilon_a$, $\varepsilon_b$ (\verb!emis_a!, \verb!emis_b!), which represent the average environmental effects (such as surface and climate) on $\varepsilon$ at a certain location \citep{brunt32}:
 \begin{align} \label{eq:emis1}
   \varepsilon = \varepsilon_a + \varepsilon_b \sqrt{e}
 \end{align}
@@ -387,12 +387,11 @@ with
 The parameters $\varepsilon_a$, $\varepsilon_b$ can be estimated through Eqs.~\eqref{eq:emis2} and \eqref{eq:emis1} if sufficient data of $L_n$, $TA$, $e$, and $f$ are available.
 
 \textbf{Note.}
-The second method for calculating $\varepsilon$ uses air temperature as the only predictor for $\varepsilon$ without the need of $\varepsilon_a$, $\varepsilon_b$, $e$ \citep{maidment93}:
+The second method for calculating $\varepsilon$ uses air temperature as the only predictor for $\varepsilon$ without the need of $\varepsilon_a$, $\varepsilon_b$, $e$ and was derived in \citet{maidment93} based on \citet{idso69}:
 \begin{align} \label{eq:emis3}
   \varepsilon = -0.02 + 0.261 \exp(-7.77 \times 10^{-4} TA^2)
 \end{align}
 %
-(Derivation? $\rightarrow$ \citet{maidment93}, ref. 53)
 It seems that Eq.~\eqref{eq:emis1} is the more suitable choice if $e$ is known since it lets the user implement more of the specific environmental conditions at a study site through the emissivity parameters.
 However, if $\varepsilon_a$ and $\varepsilon_b$ can't be determined as explained and both $e$ and $TA$ data are available, the question is whether it is better to use Eq.~\eqref{eq:emis1} with average-condition values from \citet{maidment93} or Eq.~\eqref{eq:emis3}.
 In ECHSE, Eq.~\eqref{eq:emis1} is preferred as soon as any $e$ data are given as an input and thereby follows the recommendation of \citet{maidment93}.
@@ -658,7 +657,7 @@ It is discussed in the next section since two different versions of the equation
 \subsection{Note on the calculation of the canopy resistance $r_{cs}$} \label{ssec:parest_veg_notercs}
 
 Instead of using Eq.~\eqref{eq:glohalf2} from \citet{saugier91}, the canopy stomatal resistance $r_{cs}$ can be estimated simply from the stomatal resistance of a single average leaf in the canopy and the leaf area index (Sec.~\ref{ssec:parest_veg_lai}).
-\citet{shuttleworth76} showed that the canopy stomatal resistance is inversely proportional to the leaf area index and derived the following relationship for a canopy of amphistomatous leaves (e.g. some grasses or conifers, \citealt{shuttleworth85}):
+\citet{shuttleworth76} showed that the canopy stomatal resistance is inversely proportional to the leaf area index and postulated the following relationship for a canopy of amphistomatous leaves (e.g. some grasses or conifers, \citealt{shuttleworth85}):
 \begin{align} \label{eq:notercs1}
   r_{cs} = \frac{\overline{r_{l,act}}}{2 LAI}
 \end{align}
