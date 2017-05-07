@@ -1,0 +1,10 @@
+auto/
+*.aux
+*.bbl
+*.blg
+*.dvi
+*.log
+*.ps
+*.tex~
+*.toc
+var_par_nodes.svg

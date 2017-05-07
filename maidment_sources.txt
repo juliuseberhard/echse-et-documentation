@@ -1,0 +1,5 @@
+emissivity empirical equation: Idso, Jackson: Thermal Radiation from the Atmosphere, J. Geophys. Res.
+
+cloudiness correction parameters: Wright & Jensen: Peak Water Requirements of 15 crops in southern Idaho, J. Irrig. Drain. Eng.
+
+parameter values emis and fcorr: Doorenbos & Pruitt: Crop Water Requirements, Irr. and Drain. Paper 24 FAO

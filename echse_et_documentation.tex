@@ -334,20 +334,34 @@ For Morocco, $\varphi = 31.50^\circ$~N, $L_m = 8.14^\circ$~W, and $h = 464$~m~a.
 \textbf{Basics.}
 The albedo $\mu$ (\verb!alb!) is defined as
 \begin{align*}
-  \mu = \frac{R_{inS}}{R_{outS}}
+  \mu = \frac{R_{outS}}{R_{inS}}
 \end{align*}
 %
 with
 \begin{denseitem}
-  \item[] $R_{inS}$: incoming short-wave radiation (\verb!glorad!), in W~m$^{-2}$,
-  \item[] $R_{outS}$: outgoing short-wave radiation, in W~m$^{-2}$.
+  \item[] $R_{outS}$: outgoing short-wave radiation, in W~m$^{-2}$,
+  \item[] $R_{inS}$: incoming short-wave radiation (\verb!glorad!), in W~m$^{-2}$.
 \end{denseitem}
 
 \textbf{Method.}
 It can be estimated from observations of $R_{inS}$ and $R_{outS}$ or from literature values for various land surfaces.
 The albedo of a surface can change over time and is supplied as a time series in ECHSE.
 
-\textbf{Portugal, Morocco.} None of the measurements did include $R_{outS}$ data, so both the albedos in Portugal and Morocco have been estimated as constantly 0.3, judging by the descriptions of the surfaces.
+\textbf{Portugal.}
+The measurements of the short-wave radiation components at the stations HS and NSA comprised hourly time series between April 7 and August 4, 2014.
+The albedo was derived as a total mean of the hourly $R_{outS}/R_{inS}$ ratio.
+Only records of times between 8:00 and 16:00 were used for the estimation.
+Although the observations showed a distinct trend in the albedo, I could not conclude the amplitude of yearly fluctuations from the observations and therefore used the calculated mean as a constant value over the whole year, $\mu = 0.082$.
+
+\begin{figure}[ht]
+  \centering
+  \includegraphics[width=0.6\hsize]{./plot_alb.pdf}
+  \caption{$R_{outS}/R_{inS}$ ratio, daily mean. Total mean: $\mu = 0.0816$.}
+  \label{fig:portugal_alb}
+\end{figure}
+
+\textbf{Morocco.}
+None of the measurements did include $R_{outS}$ data, so the albedo has been estimated as constantly 0.3, judging by the descriptions of the surfaces.
 These are likely to have $0.25 < \mu < 0.4$, where 0.25 is the albedo of green grass \citep{markvart03} and 0.4 that of dry sand \citep{tetzlaff83}.
 
 \subsection{Emissivity parameters (\texttt{emis\_a}, \texttt{emis\_b})} \label{ssec:parest_rad_emis}
@@ -369,7 +383,7 @@ with
 \end{denseitem}
 %
 $e$ is derived from measurements of the air temperature and the relative humidity.
-$\varepsilon$ itself is used in ECHSE for the calculation of the net incoming long-wave radiation:
+$\varepsilon$ itself is used in ECHSE for the calculation of the net incoming long-wave radiation (adapted Stefan-Boltzmann law):
 \begin{align} \label{eq:emis2}
   L_n = -f \varepsilon \sigma (TA + 273.15~\text{K})^4
 \end{align}
@@ -385,6 +399,7 @@ with
 
 \textbf{Method.}
 The parameters $\varepsilon_a$, $\varepsilon_b$ can be estimated through Eqs.~\eqref{eq:emis2} and \eqref{eq:emis1} if sufficient data of $L_n$, $TA$, $e$, and $f$ are available.
+If not, one can look up suggested values by \citet{maidment93} (p.~4.7), i. e. $\varepsilon_a = 0.34$ and $\varepsilon_b = -0.14$ for ``average conditions'' and general ranges of 0.34 to 0.44 for $\varepsilon_a$ and $-0.14$ to $-0.25$ for $\varepsilon_b$, derived from data in \citet{fao77}.
 
 \textbf{Note.}
 The second method for calculating $\varepsilon$ uses air temperature as the only predictor for $\varepsilon$ without the need of $\varepsilon_a$, $\varepsilon_b$, $e$ and was derived in \citet{maidment93} based on \citet{idso69}:
@@ -398,7 +413,7 @@ In ECHSE, Eq.~\eqref{eq:emis1} is preferred as soon as any $e$ data are given as
 As can be seen in Sec.~\ref{ssec:parest_rad_fcorr}, the cloudiness correction factor $f$ is determined by two parameters ($f_a$, $f_b$), which need to be supplied by the user.
 Their estimation is possible only through the use of Eq.~\eqref{eq:emis2}, thus dependent on $\varepsilon$ data.
 This means that a well-founded calculation of the emissivity is the requirement for a good estimation of $f_a$ and $f_b$.
-And as both $\varepsilon$ and $f$ are highly empirical factors, ... (\emph{Herleitungen in Maidment \"uberpr\"ufen, dann entscheiden.})
+Since it was not clear which method would provide a better value of $\varepsilon$, I decided to use both methods and compare the outputs of the models.
 
 \textbf{Portugal.}
 I chose default values of $\varepsilon_a = 0.34$ and $\varepsilon_b = -0.14$, as suggested for average conditions by \citet{maidment93}.
@@ -425,7 +440,7 @@ with
 \end{denseitem}
 
 \textbf{Portugal.}
-Since the data didn't include measurements of $R_{net}$, I used the results of internally calculated values of $R_{net}$ and measurements of $G_{soil}$ for calculating $f_{day}$, $f_{night}$ hourly from Eqs. \eqref{eq:f1}, \eqref{eq:f2}.
+Since the data didn't include measurements of $R_{net}$, I used the results of internally calculated values of $R_{net}$ and measurements of $G_{soil}$ for calculating $f_{day}$, $f_{night}$ hourly from Eqs.~\eqref{eq:f1}, \eqref{eq:f2}.
 The distinction of the time series into daytime and nighttime was made using the \emph{RAtmosphere::suncalc} procedure by Gionata Biavati, which provided sunrise and sunset times for the study site.
 Averaging over all hours gave the results.
 
@@ -468,6 +483,14 @@ The cloudiness correction parameters could not be determined because the data fr
 Observations of net long-wave radiation and individual estimations of net emissivity were missing and would have been necessary to make a good estimation.
 Missing data of clear-sky radiation, however, could have been derived from actual global radiation data.
 I applied the values for arid areas from \citet{maidment93} (p. 4.8), $f_a = 1.35$, $f_b = -0.35$.
+
+\begin{figure}[ht]
+  \centering
+  \includegraphics[width=0.6\hsize]{./plot_fcorr_both.pdf}
+  \caption{Regression of $f$ data calculated from Eq.~\eqref{eq:emis2} for the estimation of $f_a$, $f_b$.
+           Upper: emissivity calculated after \citet{brunt32} with $\varepsilon_a = 0.34$, $\varepsilon_b = -0.14$; lower: emissivity calculated after \citet{idso69}.}
+  \label{fig:portugal_fcorr}
+\end{figure}
 
 \textbf{Morocco.}
 Same as Portugal.
