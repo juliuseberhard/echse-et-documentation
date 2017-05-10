@@ -417,11 +417,12 @@ Since it was not clear which method would provide a better value of $\varepsilon
 
 \textbf{Portugal.}
 I chose default values of $\varepsilon_a = 0.34$ and $\varepsilon_b = -0.14$, as suggested for average conditions by \citet{maidment93}.
-The values could not be estimated specifically because data of the incoming long-wave radiation were missing.
+The values could not be estimated specifically because the cloudiness correction $f$ was not known for the study site.
+In fact, $f$ was estimated with the adopted emissivity parameters through Eq.~\eqref{eq:emis2} for the determination of the cloudiness correction parameters $f_a$, $f_b$.
 
 \textbf{Morocco.}
 As for Portugal, I chose $\varepsilon_a = 0.34$ and $\varepsilon_b = -0.14$.
-The values could not be estimated specifically because data of the net long-wave radiation were missing.
+The values could not be estimated specifically because data of the net long-wave radiation and the cloudiness correction were missing.
 
 \subsection{Soil heat factors (\texttt{f\_day}, \texttt{f\_night})} \label{ssec:parest_rad_f}
 
@@ -479,6 +480,16 @@ with
 The parameters can be estimated from Eq.~\eqref{eq:emis2} if sufficient data of $L_n$, $\varepsilon$, $TA$, $R_{inS}$, and $R_{inS,cs}$ are available.
 
 \textbf{Portugal.}
+First, the cloudiness correction $f$ was estimated from $L_n$, $TA$, and $\varepsilon$ where the net emissivity was calculated following both methods described in Sec.~\ref{ssec:parest_rad_emis}, i. e. Eq.~\eqref{emis1} \citep{brunt32} and Eq.~\eqref{eq:emis3} \citep{idso69}.
+The parameters $f_a$, $f_b$ could then be estimated through an adapted regression method:
+The condition $f_a + f_b = 1$ was not possible to be fulfilled by a linear regression of $f$ over $R_{inS}/R_{inS,cs}$ (the latter of which was derived by means of the previously estimated \{AA}ngstr\"om parameters).
+In order to get a model close to the data, I did a linear regression of the data (although the conditional mean didn't behave linearly and therefore did not fulfill the assumptions for a valid linear regression) and used the intersect (the value of $f$ at $R_{inS} = 0$) as estimation of $f_b$.
+$f_a$ was then determined from the condition above.
+
+Due to the imperfection of the emissivity estimations, the calculated $f$ values often exceeded
+
+some observations of the net long-wave radiation exceeded the calculated maximum values ($L_{n,max} = -\varepsilon \sigma (TA + 273.15~\text{K})^4$), resulting in a cloudiness correction exceeding 1.
+
 The cloudiness correction parameters could not be determined because the data from Portugal were not sufficient.
 Observations of net long-wave radiation and individual estimations of net emissivity were missing and would have been necessary to make a good estimation.
 Missing data of clear-sky radiation, however, could have been derived from actual global radiation data.
@@ -487,7 +498,8 @@ I applied the values for arid areas from \citet{maidment93} (p. 4.8), $f_a = 1.3
 \begin{figure}[ht]
   \centering
   \includegraphics[width=0.6\hsize]{./plot_fcorr_both.pdf}
-  \caption{Regression of $f$ data calculated from Eq.~\eqref{eq:emis2} for the estimation of $f_a$, $f_b$.
+  \caption{Adapted regression models (lines) of $f$ data (points) calculated from Eq.~\eqref{eq:emis2} for the estimation of $f_a$, $f_b$.
+           See text for the method used.
            Upper: emissivity calculated after \citet{brunt32} with $\varepsilon_a = 0.34$, $\varepsilon_b = -0.14$; lower: emissivity calculated after \citet{idso69}.}
   \label{fig:portugal_fcorr}
 \end{figure}
