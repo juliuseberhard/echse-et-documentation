@@ -478,17 +478,15 @@ with
 
 \textbf{Method.}
 The parameters can be estimated from Eq.~\eqref{eq:emis2} if sufficient data of $L_n$, $\varepsilon$, $TA$, $R_{inS}$, and $R_{inS,cs}$ are available.
+Shuttleworth gives values of $f_a = 1.35$, $f_b = -0.35$ for arid conditions and $f_a = 1.0$, $f_b = 0.0$ for humid conditions in \citet{maidment93}, p. 4.8.
 
 \textbf{Portugal.}
-First, the cloudiness correction $f$ was estimated from $L_n$, $TA$, and $\varepsilon$ where the net emissivity was calculated following both methods described in Sec.~\ref{ssec:parest_rad_emis}, i. e. Eq.~\eqref{emis1} \citep{brunt32} and Eq.~\eqref{eq:emis3} \citep{idso69}.
+First, the cloudiness correction $f$ was estimated from $L_n$, $TA$, and $\varepsilon$ where the net emissivity was calculated following both methods described in Sec.~\ref{ssec:parest_rad_emis}, i. e. Eq.~\eqref{eq:emis1} \citep{brunt32} and Eq.~\eqref{eq:emis3} \citep{idso69}.
 The parameters $f_a$, $f_b$ could then be estimated through an adapted regression method:
 The condition $f_a + f_b = 1$ was not possible to be fulfilled by a linear regression of $f$ over $R_{inS}/R_{inS,cs}$ (the latter of which was derived by means of the previously estimated {\AA}ngstr\"om parameters).
 In order to get a model close to the data, I did a linear regression of the data (although the conditional mean didn't behave linearly and therefore did not fulfill the assumptions for a valid linear regression) and used the intersect (the value of $f$ at $R_{inS} = 0$) as estimation of $f_b$.
 $f_a$ was then determined from the condition above.
 Fig.~\ref{fig:portugal_fcorr} shows the calculated cloudiness correction and the adapted regression models for both emissivity methods as well as the suggested model by Shuttleworth in \citet{maidment93}.
-
-Missing data of clear-sky radiation, however, could have been derived from actual global radiation data.
-I applied the values for arid areas from \citet{maidment93} (p. 4.8), $f_a = 1.35$, $f_b = -0.35$.
 
 \begin{figure}[ht]
   \centering
@@ -500,7 +498,7 @@ I applied the values for arid areas from \citet{maidment93} (p. 4.8), $f_a = 1.3
 \end{figure}
 
 \textbf{Morocco.}
-Same as Portugal.
+Data of the net long-wave radiation were missing, thus I chose the suggested values for arid conditions in \citet{maidment93}.
 
 \subsection{{\AA}ngstr\"om parameters (\texttt{radex\_a}, \texttt{radex\_b})} \label{ssec:parest_rad_radex}
 
