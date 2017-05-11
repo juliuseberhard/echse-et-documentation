@@ -482,16 +482,11 @@ The parameters can be estimated from Eq.~\eqref{eq:emis2} if sufficient data of 
 \textbf{Portugal.}
 First, the cloudiness correction $f$ was estimated from $L_n$, $TA$, and $\varepsilon$ where the net emissivity was calculated following both methods described in Sec.~\ref{ssec:parest_rad_emis}, i. e. Eq.~\eqref{emis1} \citep{brunt32} and Eq.~\eqref{eq:emis3} \citep{idso69}.
 The parameters $f_a$, $f_b$ could then be estimated through an adapted regression method:
-The condition $f_a + f_b = 1$ was not possible to be fulfilled by a linear regression of $f$ over $R_{inS}/R_{inS,cs}$ (the latter of which was derived by means of the previously estimated \{AA}ngstr\"om parameters).
+The condition $f_a + f_b = 1$ was not possible to be fulfilled by a linear regression of $f$ over $R_{inS}/R_{inS,cs}$ (the latter of which was derived by means of the previously estimated {\AA}ngstr\"om parameters).
 In order to get a model close to the data, I did a linear regression of the data (although the conditional mean didn't behave linearly and therefore did not fulfill the assumptions for a valid linear regression) and used the intersect (the value of $f$ at $R_{inS} = 0$) as estimation of $f_b$.
 $f_a$ was then determined from the condition above.
+Fig.~\ref{fig:portugal_fcorr} shows the calculated cloudiness correction and the adapted regression models for both emissivity methods as well as the suggested model by Shuttleworth in \citet{maidment93}.
 
-Due to the imperfection of the emissivity estimations, the calculated $f$ values often exceeded
-
-some observations of the net long-wave radiation exceeded the calculated maximum values ($L_{n,max} = -\varepsilon \sigma (TA + 273.15~\text{K})^4$), resulting in a cloudiness correction exceeding 1.
-
-The cloudiness correction parameters could not be determined because the data from Portugal were not sufficient.
-Observations of net long-wave radiation and individual estimations of net emissivity were missing and would have been necessary to make a good estimation.
 Missing data of clear-sky radiation, however, could have been derived from actual global radiation data.
 I applied the values for arid areas from \citet{maidment93} (p. 4.8), $f_a = 1.35$, $f_b = -0.35$.
 
