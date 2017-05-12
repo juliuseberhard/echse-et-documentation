@@ -409,7 +409,7 @@ The second method for calculating $\varepsilon$ uses air temperature as the only
 %
 It seems that Eq.~\eqref{eq:emis1} is the more suitable choice if $e$ is known since it lets the user implement more of the specific environmental conditions at a study site through the emissivity parameters.
 However, if $\varepsilon_a$ and $\varepsilon_b$ can't be determined as explained and both $e$ and $TA$ data are available, the question is whether it is better to use Eq.~\eqref{eq:emis1} with average-condition values from \citet{maidment93} or Eq.~\eqref{eq:emis3}.
-In ECHSE, Eq.~\eqref{eq:emis1} is preferred as soon as any $e$ data are given as an input and thereby follows the recommendation of \citet{maidment93}.
+ECHSE prefers Eq.~\eqref{eq:emis1} as soon as any $e$ data are given as an input and thereby follows the recommendation of \citet{maidment93}.
 As can be seen in Sec.~\ref{ssec:parest_rad_fcorr}, the cloudiness correction factor $f$ is determined by two parameters ($f_a$, $f_b$), which need to be supplied by the user.
 Their estimation is possible only through the use of Eq.~\eqref{eq:emis2}, thus dependent on $\varepsilon$ data.
 This means that a well-founded calculation of the emissivity is the requirement for a good estimation of $f_a$ and $f_b$.
@@ -491,8 +491,8 @@ Fig.~\ref{fig:portugal_fcorr} shows the calculated cloudiness correction and the
 \begin{figure}[ht]
   \centering
   \includegraphics[width=0.6\hsize]{./plot_fcorr_both.pdf}
-  \caption{Adapted regression models (lines) of $f$ data (points) calculated from Eq.~\eqref{eq:emis2} for the estimation of $f_a$, $f_b$.
-           See text for the method used.
+  \caption{Adapted regression models (lines) of hourly $f$ data (points) calculated with Eq.~\eqref{eq:emis2} for the estimation of $f_a$, $f_b$.
+           See text for the regression method.
            Upper: emissivity calculated after \citet{brunt32} with $\varepsilon_a = 0.34$, $\varepsilon_b = -0.14$; lower: emissivity calculated after \citet{idso69}.}
   \label{fig:portugal_fcorr}
 \end{figure}
@@ -551,7 +551,7 @@ Taking very low quantiles of the $R_{inS}/R_{ex}$ distribution and applying an u
 \textbf{Portugal.}
 Global radiation was measured hourly at the local weather station in Portugal.
 Therefore I chose to estimate \verb!radex_a! and \verb!radex_b! with Eqs.~\eqref{eq:radex4} and \eqref{eq:radex5}.
-The $R_{inS}/R_{ex}$ ratio was calculcated for daytime hours between 6:00 and 18:00 local time.
+The $R_{inS}/R_{ex}$ ratio was calculcated for daytime hours between 8:00 and 16:00 local time.
 This assured that only radiation between sunrise and sunset was taken into account for all of the simulation period.
 For the determination of reasonable values I chose the lower 5-percentile of the $R_{inS}/R_{ex}$ distribution as the minimum and the maximum value of $\{R_{inS}/R_{ex} < 1\}$ as the maximum over the whole period in which $R_{inS}$ observations were available.
 These choices proved successful in computing clear-sky radiation that didn't exceed the observed global radiation and therefore fulfilled the physical conditions.
@@ -835,7 +835,7 @@ An overview of the parameters is given for the \textsf{paramNum} group (object-s
 
 %................................................................................
 
-\bibliography{../../Tex/jubib}
+\bibliography{./jubib}
 
 %................................................................................
 
