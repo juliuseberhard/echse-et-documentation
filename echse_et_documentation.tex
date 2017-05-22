@@ -351,7 +351,7 @@ The albedo of a surface can change over time and is supplied as a time series in
 The measurements of the short-wave radiation components at the stations HS and NSA comprised hourly time series between April 7 and August 4, 2014.
 The albedo was derived as a total mean of the hourly $R_{outS}/R_{inS}$ ratio.
 Only records of times between 8:00 and 16:00 were used for the estimation.
-Although the observations showed a distinct trend in the albedo, I could not conclude the amplitude of yearly fluctuations from the observations and therefore used the calculated mean as a constant value over the whole year, $\mu = 0.082$.
+Although the observations showed a distinct development over time (Fig.~\ref{fig:portugal_alb}), I could not conclude the amplitude of yearly fluctuations from the observations and therefore used the calculated mean as a constant value over the whole year, $\mu = 0.066$.
 
 \begin{figure}[ht]
   \centering
@@ -418,7 +418,19 @@ Since it was not clear which method would provide a better value of $\varepsilon
 \textbf{Portugal.}
 I chose default values of $\varepsilon_a = 0.34$ and $\varepsilon_b = -0.14$, as suggested for average conditions by \citet{maidment93}.
 The values could not be estimated specifically because the cloudiness correction $f$ was not known for the study site.
-In fact, $f$ was estimated with the adopted emissivity parameters through Eq.~\eqref{eq:emis2} for the determination of the cloudiness correction parameters $f_a$, $f_b$.
+Instead, $f$ was estimated with the adopted emissivity parameters through Eq.~\eqref{eq:emis2} for the determination of the cloudiness correction parameters $f_a$, $f_b$.
+For a qualitative validation of the chosen values, I estimated the net emissivity from Eq.~\eqref{eq:emis2} using observations at times when global radiation was at maximum, i. e. $f \approx 1$, and compared it to the predicted values of $\varepsilon$ by both emissivity models.
+Fig.~\ref{fig:portugal_emis_both} shows ``observed'' and predicted $\varepsilon$ values, distinguishing between ``noon'' hours (between 10 am and 2 pm), when $L_n$ has a maximal magnitude, and other hours of the day.
+$f$ was chosen to be $0.9 < f \leq 1$.
+Although some observation-derived values come near the predicted values at noon hours, both models seem to overpredict the ``observed'' emissivity.
+
+\begin{figure}[ht]
+  \centering
+  \includegraphics[width=0.8\hsize]{./plot_emis_both.pdf}
+  \caption{Observation-derived vs. model-predicted net emissivity.
+           As $f \approx 1$ was assumed by choosing $0.9 < f \leq 1$, Eq.~\eqref{eq:emis2} is equivalent to $\varepsilon \approx - L_n / (\sigma (TA + 273.15~\text{K})^4)$ with observed $L_n$ and $TA$.}
+  \label{fig:portugal_emis_both}
+\end{figure}
 
 \textbf{Morocco.}
 As for Portugal, I chose $\varepsilon_a = 0.34$ and $\varepsilon_b = -0.14$.
