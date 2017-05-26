@@ -591,6 +591,34 @@ These choices proved successful in computing clear-sky radiation that didn't exc
 
 \verb!wc_sat!, \verb!wc_res!, \verb!wc_pwp!, \verb!wc_etmax!, \verb!bubble!, \verb!pores_ind!, \verb!wstressmin!, \verb!wstressmax!, \verb!soil_dens!, \verb!rss_a!, \verb!rss_b!.
 
+\subsection{Capillary suction at maximum/minimum water stress (\texttt{wstressmax} / \texttt{wstressmin})}
+
+\textbf{Basics.}
+The calculation of stomatal resistance, which is required in the PM and SW models, incorporates two stress factors for vapor stress ($\Phi_{vap}$) and water stress ($\Phi_{wat}$).
+The latter one relates the actual capillary suction in the soil $\psi$ to the capillary suction at maximum ($\psi_{s,max}$) and minimum water stress ($\psi_{s,min}$) and reads
+%
+\begin{align*}
+  \Phi_{wat} = \begin{cases}
+                1, & \psi < \psi_{s,min} \\
+                1 - \frac{\psi - \psi_{s,min}}{\psi_{s,max} - \psi_{s,min}}, & \psi_{s,min} \leq \psi < \psi_{s,max} \\
+                0.01 & \psi \geq \psi_{s,max}
+              \end{cases}
+\end{align*}
+%
+with
+\begin{denseitem}
+  \item[] $\psi$: actual capillary suction, in hPa,
+  \item[] $\psi_{s,max}$: capillary suction at maximum water stress (\verb!wstressmax!), in hPa,
+  \item[] $\psi_{s,min}$: capillary suction at minimum water stress (\verb!wstressmin!), in hPa.
+\end{denseitem}
+
+\textbf{Method.}
+Since water stress for a plant is at maximum when it is not able to detract water from the soil anymore, it's a plausible decision to set $\psi_{s,max}$ to the defined \citep{scheffer10} permanent wilting point of $10^{4.2}$~hPa.
+$\psi_{s,min}$ is more difficult to determine but simple sensitivity analyses showed almost no influence of a variation of $\psi_{s,min}$ between 0 and 500~hPa (a range from full saturation to above the upper range of field capacity at $10^{2.5}$ hPa) on the simulated actual evapotranspiration.
+
+\textbf{Portugal, Morocco.}
+Following the explanations above, I set $\psi_{s,max} = 15849~\text{hPa} \approx 10^{4.2}~\text{hPa}$ and $\psi_{s,min} = 100~\text{hPa}$.
+
 \section{Vegetation parameters} \label{sec:parest_veg}
 
 \subsection{Canopy height (\texttt{cano\_height})} \label{ssec:parest_veg_canoheight}
