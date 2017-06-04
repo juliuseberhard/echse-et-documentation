@@ -217,13 +217,16 @@ In Ch.~\ref{ch:results}, an overview of the estimated parameter values is given,
 
 \subsection{Portugal} \label{ssec:intro_areas_portugal}
 
-The \emph{Machoqueira do Grou} area is a 2,500~ha sized woodland in the Santar\'em district, between the towns of Coruche and Foros do Arr$\tilde{\text{a}}$o, Portugal.
-The vegetation is dominated by cork oak trees and grasses.
-A part of the data comes from two measurement stations within the woodland, which were set up for recording eddy covariance data with measurement towers and other meteorological variables.
+The \emph{Herdade da Machuqueira do Grou} area is a 2,500~ha sized woodland in the Santar\'em district, between the towns of Coruche and Foros do Arr$\tilde{\text{a}}$o, Portugal.
+The vegetation is dominated by cork oak trees and shrubs.
+A part of the meteorological data comes from two measurement stations within the woodland.
 One station is located between trees under the open sky (\emph{Hauptstation}, HS), the other was set up under a cork oak (\emph{Nebenstation A}, NSA).
 The data for both stations include
 \begin{denseitem}
-  \item[--] net total radiation,
+  \item[--] incoming short-wave radiation,
+  \item[--] outgoing (reflected) short-wave radiation,
+  \item[--] incoming long-wave radiation,
+  \item[--] outgoing long-wave radiation,
   \item[--] air temperature,
   \item[--] soil moisture content,
   \item[--] sensible heat flux,
@@ -234,14 +237,13 @@ The data for both stations include
 \end{denseitem}
 %
 they were recorded hourly.
-An evaporation flux was determined through the use of the Bowen ratio ($\rightarrow$ Taylor \& Ashcroft).
+An evaporation flux was determined through the use of the Bowen ratio, i. e. the ratio of sensible to latent heat flux.
 
-Additional meteorological data come from a nearby weather station.
+Additional meteorological data come from an eddy-covariance tower in the area (set up at UTM coordinates 557,689.5 easting, 4,332,375.0 northing; NSB\_TOWER in Fig.~\ref{fig:map_coruche}).
 They include
 \begin{denseitem}
-  \item[--] photosynthetically active radiation (PAR),
-  \item[--] incoming short-wave radiation,
-  \item[--] outgoing long-wave radiation,
+  \item[--] net short-wave radiation,
+  \item[--] net long-wave radiation,
   \item[--] air temperature,
   \item[--] relative humidity,
   \item[--] rainfall,
@@ -249,6 +251,14 @@ They include
 \end{denseitem}
 %
 they were recorded half-hourly.
+
+\begin{figure}[ht]
+  \centering
+  \includegraphics[width=0.7\hsize]{./map_coruche}
+  \caption{Satellite image (\emph{Google Maps}) of the study area in Portugal with locations of the field stations (HS, NSA) and the eddy-covariance tower (NSB\_TOWER).}
+  \label{fig:map_coruche}
+\end{figure}
+
 
 \subsection{Morocco} \label{ssec:intro_areas_morocco}
 
@@ -407,6 +417,11 @@ The second method for calculating $\varepsilon$ uses air temperature as the only
   \varepsilon = -0.02 + 0.261 \exp(-7.77 \times 10^{-4} TA^2)
 \end{align}
 %
+with
+\begin{denseitem}
+  \item[] $TA$: mean air temperature, in $^\circ$C.
+\end{denseitem}
+%
 It seems that Eq.~\eqref{eq:emis1} is the more suitable choice if $e$ is known since it lets the user implement more of the specific environmental conditions at a study site through the emissivity parameters.
 However, if $\varepsilon_a$ and $\varepsilon_b$ can't be determined as explained and both $e$ and $TA$ data are available, the question is whether it is better to use Eq.~\eqref{eq:emis1} with average-condition values from \citet{maidment93} or Eq.~\eqref{eq:emis3}.
 ECHSE prefers Eq.~\eqref{eq:emis1} as soon as any $e$ data are given as an input and thereby follows the recommendation of \citet{maidment93}.
@@ -414,6 +429,7 @@ As can be seen in Sec.~\ref{ssec:parest_rad_fcorr}, the cloudiness correction fa
 Their estimation is possible only through the use of Eq.~\eqref{eq:emis2}, thus dependent on $\varepsilon$ data.
 This means that a well-founded calculation of the emissivity is the requirement for a good estimation of $f_a$ and $f_b$.
 Since it was not clear which method would provide a better value of $\varepsilon$, I decided to use both methods and compare the outputs of the models.
+A simple sensitivity analysis indicated that the $et$ models of PM and SW could only show a small, if any, reaction to changing the emissivity model.
 
 \textbf{Portugal.}
 I chose default values of $\varepsilon_a = 0.34$ and $\varepsilon_b = -0.14$, as suggested for average conditions by \citet{maidment93}.
@@ -426,8 +442,8 @@ Although some observation-derived values come near the predicted values at noon 
 
 \begin{figure}[ht]
   \centering
-  \includegraphics[width=0.8\hsize]{./plot_emis_both.pdf}
-  \caption{Observation-derived vs. model-predicted net emissivity.
+  \includegraphics[width=0.8\hsize]{./plot_emis_both_HS.pdf}
+  \caption{Observation-derived vs. model-predicted net emissivity at HS station.
            As $f \approx 1$ was assumed by choosing $0.9 < f \leq 1$, Eq.~\eqref{eq:emis2} is equivalent to $\varepsilon \approx - L_n / (\sigma (TA + 273.15~\text{K})^4)$ with observed $L_n$ and $TA$.}
   \label{fig:portugal_emis_both}
 \end{figure}
@@ -595,7 +611,7 @@ These choices proved successful in computing clear-sky radiation that didn't exc
 
 \textbf{Basics.}
 The calculation of stomatal resistance, which is required in the PM and SW models, incorporates two stress factors for vapor stress ($\Phi_{vap}$) and water stress ($\Phi_{wat}$).
-The latter one relates the actual capillary suction in the soil $\psi$ to the capillary suction at maximum ($\psi_{s,max}$) and minimum water stress ($\psi_{s,min}$) and reads
+The latter one relates the actual capillary suction in the soil $\psi$ (also called soil water potential) to the capillary suction at maximum ($\psi_{s,max}$) and minimum water stress ($\psi_{s,min}$) and reads
 %
 \begin{align*}
   \Phi_{wat} = \begin{cases}
@@ -616,8 +632,14 @@ with
 Since water stress for a plant is at maximum when it is not able to detract water from the soil anymore, it's a plausible decision to set $\psi_{s,max}$ to the defined \citep{scheffer10} permanent wilting point of $10^{4.2}$~hPa.
 $\psi_{s,min}$ is more difficult to determine but simple sensitivity analyses showed almost no influence of a variation of $\psi_{s,min}$ between 0 and 500~hPa (a range from full saturation to above the upper range of field capacity at $10^{2.5}$ hPa) on the simulated actual evapotranspiration.
 
-\textbf{Portugal, Morocco.}
-Following the explanations above, I set $\psi_{s,max} = 15849~\text{hPa} \approx 10^{4.2}~\text{hPa}$ and $\psi_{s,min} = 100~\text{hPa}$.
+\textbf{Portugal.}
+\citet{gazdar16} measured pre-dawn capillary suctions at both study sites (HS and NSA) for different water contents.
+At HS, for a minimum water content of 0.05~m$^3$~m$^{-3}$, the results were $\psi_{HS} = 1.31$~MPa for \emph{Cistus crispus} vegetation and $\psi_{HS} = 0.5$~MPa for \emph{Quercus suber}.
+At NSA, for a minimum water content of 0.10~m$^3$~m$^{-3}$, $\psi_{NSA} = 1.4$~MPa for \emph{Cistus} and $\psi_{NSA} = 0.89$~MPa for \emph{Quercus}.
+
+
+\textbf{Morocco.}
+
 
 \section{Vegetation parameters} \label{sec:parest_veg}
 
@@ -714,7 +736,7 @@ which I used for the estimation of $g_{srad}$ through model calibration (?).
 Since conductance is equal to inverse resistance, $g_{srad}$ corresponds to the global radiation at which the stomatal \emph{resistance} is double of its minimum value.
 
 \textbf{Note 2.}
-The described approach of \citet{saugier91} was basically applied in the WASA model for semi-arid conditions \citep{guentner02} and is implemented in ECHSE.
+The described approach of \citet{saugier91} was applied in the WASA model for semi-arid conditions \citep{guentner02} and is implemented in ECHSE.
 In both cases the minimum resistance of a single leaf in Eq.~\eqref{eq:glohalf2} was replaced by the actual resistance of a single leaf, $r_{l,act}$.
 This adaption is justified because $r_{l,act}$, as used in WASA and ECHSE, represents the minimum stomatal resistance regarding all other factors than radiation, which was used as $r_{l,min}$ by \citet{saugier91} for their derivation of Eq.~\eqref{eq:glohalf2}.
 
@@ -744,7 +766,7 @@ The other version of the above relationship (Eq.~\ref{eq:notercs1}) is
   r_{cs} = \frac{\overline{r_{l,act}}}{LAI_{active}} = \frac{\overline{r_{l,act}}}{0.5 LAI}
 \end{align}
 %
-and was published by the FAO (\url{www.fao.org/docrep/X0490E/x0490e06.htm}, Box 5) as an estimate for a reference crop, i.e. clipped, dense-growing grass where only the upper half of the canopy -- expressed as active leaf area index $LAI_{active}$ -- is considered to contribute to mass and heat transport toward the atmosphere \citep{fao98}.
+and was published by the FAO (\url{www.fao.org/docrep/X0490E/x0490e06.htm}, Box 5) as an estimate for a reference crop, i. e. clipped, densely growing grass where only the upper half of the canopy -- expressed as active leaf area index $LAI_{active}$ -- is considered to contribute to mass and heat transport toward the atmosphere \citep{fao98}.
 The underlying assumption in Eq.~\eqref{eq:notercs2} apparently takes into account only one side of the leaves.
 This estimate of a reference canopy resistance was used in the SWAT model.
 
@@ -869,9 +891,20 @@ An overview of the parameters is given for the \textsf{paramNum} group (object-s
 
 \chapter{Conclusion} \label{ch:conclusion}
 
-\begin{itemize}
-  \item[--] Soil heat flux needs a better model.
-\end{itemize}
+The calculation of the soil heat flux could be improved by a simple implementation of the 1-dimensional heat equation using finite differences.
+This method would require data of the soil temperature in two different depths and data of the specific heat capacity $c$.
+The latter one could also be derived by
+%
+\begin{align*}
+  c = 2.45 \times x_\text{mineral} + 2.45 \times x_\text{org} + 4.186 \times x_\text{water},
+\end{align*}
+%
+with
+\begin{denseitem}
+  \item[] $x_\text{mineral}$: mass fraction of minerals in the soil, in m$^3$~m$^{-3}$,
+  \item[] $x_\text{org}$: mass fraction of organic matter in the soil, in m$^3$~m$^{-3}$,
+  \item[] $x_\text{water}$: mass fraction of water in the soil, in m$^3$~m$^{-3}$.
+\end{denseitem}
 
 %................................................................................
 
