@@ -1,4 +1,4 @@
-### Modeling Evapotranspiration in ECHSE: Documentation
+## Modeling Evapotranspiration in ECHSE: Documentation
 
 Using the Eco-Hydrological Simulation Environment (ECHSE) for modeling evapotranspiration fluxes in semi-arid regions.
 **Documentation** in PDF and TEX.
