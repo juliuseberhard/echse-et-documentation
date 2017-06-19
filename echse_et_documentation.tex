@@ -7,6 +7,7 @@
 \usepackage{graphicx}
 \usepackage[round]{natbib}
 \usepackage{pst-node}
+%\usepackage{textcomp}  % \textregistered
 \usepackage[hyphens,obeyspaces]{url}
 
 % settings
@@ -219,15 +220,15 @@ In Ch.~\ref{ch:results}, an overview of the estimated parameter values is given,
 
 The \emph{Herdade da Machuqueira do Grou} area is a 2,500~ha sized woodland in the Santar\'em district, between the towns of Coruche and Foros do Arr$\tilde{\text{a}}$o, Portugal.
 The vegetation is dominated by cork oak trees and shrubs.
-A part of the meteorological data comes from two measurement stations within the woodland.
+A part of the meteorological data (measured at a height of 2 m) comes from two measurement stations within the woodland.
 One station is located between trees under the open sky (\emph{Hauptstation}, HS), the other was set up under a cork oak (\emph{Nebenstation A}, NSA).
 The data for both stations include
 \begin{denseitem}
-  \item[--] incoming short-wave radiation,
-  \item[--] outgoing (reflected) short-wave radiation,
+  \item[--] incoming short-wave radiation $R_{inS}$ (\verb!glorad!),
+  \item[--] outgoing (reflected) short-wave radiation $R_{outS}$,
   \item[--] incoming long-wave radiation,
   \item[--] outgoing long-wave radiation,
-  \item[--] air temperature,
+  \item[--] air temperature $TA$ (\verb!temp!),
   \item[--] soil heat flux,
   \item[--] soil moisture content,
   \item[--] sensible heat flux,
@@ -240,26 +241,30 @@ The data for both stations include
 they were recorded hourly.
 An evaporation flux was determined through the use of the Bowen ratio, i. e. the ratio of sensible to latent heat flux.
 
-Additional meteorological data come from an eddy-covariance tower in the area (set up at UTM coordinates 557,689.5 easting, 4,332,375.0 northing; NSB\_TOWER in Fig.~\ref{fig:map_coruche}).
+Additional meteorological data (measured at a height of 22~m) come from an eddy covariance tower (build by LI-COR Environmental) in the area (set up at UTM coordinates 557,689.5 easting, 4,332,375.0 northing; NSB\_TOWER in Fig.~\ref{fig:map_coruche}).
 They include
 \begin{denseitem}
-  \item[--] net short-wave radiation,
-  \item[--] net long-wave radiation,
-  \item[--] air temperature,
+  \item[--] net short-wave radiation $R_{netS}$,
+  \item[--] net long-wave radiation $R_{netL}$,
+  \item[--] net total radiation $R_{netS} + R_{netL}$,
+  \item[--] air temperature $TA$,
   \item[--] relative humidity,
   \item[--] rainfall,
-  \item[--] atmospheric pressure;
+  \item[--] atmospheric pressure,
+  \item[--] wind speed,
+  \item[--] wind direction,
+  \item[--] sensible heat flux, including a quality flag following Foken \& Mauder,
+  \item[--] latent heat flux, including a quality flag following Foken \& Mauder;
 \end{denseitem}
 %
 they were recorded half-hourly.
 
-\begin{figure}[ht]
+\begin{figure}[t]
   \centering
   \includegraphics[width=0.7\hsize]{./map_coruche}
   \caption{Satellite image (\emph{Google Maps}) of the study area in Portugal with locations of the field stations (HS, NSA) and the eddy-covariance tower (NSB\_TOWER).}
   \label{fig:map_coruche}
 \end{figure}
-
 
 \subsection{Morocco} \label{ssec:intro_areas_morocco}
 
@@ -332,7 +337,7 @@ The values of $z_0$ and $c_d$ were numerically estimated by the authors and are 
 \section{Geographical parameters} \label{sec:parest_geo}
 
 Each model employs 3 or less geographical parameters for calculating the radiation balance: \textbf{latitude} $\varphi$ (\verb!lat!), \textbf{longitude} $L_m$ (\verb!lon!), \textbf{elevation} $h$ (\verb!elev!).
-For the sites in Portugal, the locations were given as UTM coordinates (HS: 557,640.5~m easting, 4,332,523.5~m northing; NSA: 557,717.0~m easting, 4,332,408.0~m northing; both in UTM zone~29S) from which I could derive $\varphi = 39.14^\circ$~N and $L_m= 8.33^\circ$~W for both field stations.
+For the sites in Portugal, the locations were given as UTM coordinates (HS: 557,640.5~m easting, 4,332,523.5~m northing; NSA: 557,717.0~m easting, 4,332,408.0~m northing; both in UTM zone~29S, see Fig.~\ref{fig:map_coruche}) from which I could derive $\varphi = 39.14^\circ$~N and $L_m= 8.33^\circ$~W for both field stations.
 The actual distance of 139~m between the stations corresponds to less than $0.01^\circ$ and was therefore taken as 0.
 A common value for $h$ of the Portugal sites was estimated from local elevation maps (\emph{floodmap.net}) as 160~m above sea level.
 
@@ -396,12 +401,12 @@ with
 $e$ is derived from measurements of the air temperature and the relative humidity.
 $\varepsilon$ itself is used in ECHSE for the calculation of the net incoming long-wave radiation (adapted Stefan-Boltzmann law):
 \begin{align} \label{eq:emis2}
-  L_n = -f \varepsilon \sigma (TA + 273.15~\text{K})^4
+  R_{netL} = -f \varepsilon \sigma (TA + 273.15~\text{K})^4
 \end{align}
 %
 with
 \begin{denseitem}
-  \item[] $L_n$: net incoming long-wave radiation, in W~m$^{-2}$~K$^{-4}$,
+  \item[] $R_{netL}$: net incoming long-wave radiation, in W~m$^{-2}$~K$^{-4}$,
   \item[] $f$: cloudiness correction factor (Sec.~\ref{ssec:parest_rad_fcorr}), no unit,
   \item[] $\varepsilon$: net emissivity between ground and atmosphere, no unit,
   \item[] $\sigma$: Stefan-Boltzmann constant, $5.670373 \times 10^{-8}$~W~m$^{-2}$~K$^{-4}$,
@@ -409,7 +414,7 @@ with
 \end{denseitem}
 
 \textbf{Method.}
-The parameters $\varepsilon_a$, $\varepsilon_b$ can be estimated through Eqs.~\eqref{eq:emis2} and \eqref{eq:emis1} if sufficient data of $L_n$, $TA$, $e$, and $f$ are available.
+The parameters $\varepsilon_a$, $\varepsilon_b$ can be estimated through Eqs.~\eqref{eq:emis2} and \eqref{eq:emis1} if sufficient data of $R_{netL}$, $TA$, $e$, and $f$ are available.
 If not, one can look up suggested values by \citet{maidment93} (p.~4.7), i. e. $\varepsilon_a = 0.34$ and $\varepsilon_b = -0.14$ for ``average conditions'' and general ranges of 0.34 to 0.44 for $\varepsilon_a$ and $-0.14$ to $-0.25$ for $\varepsilon_b$, derived from data in \citet{fao77}.
 
 \textbf{Note.}
@@ -437,7 +442,7 @@ I chose default values of $\varepsilon_a = 0.34$ and $\varepsilon_b = -0.14$, as
 The values could not be estimated specifically because the cloudiness correction $f$ was not known for the study site.
 Instead, $f$ was estimated with the adopted emissivity parameters through Eq.~\eqref{eq:emis2} for the determination of the cloudiness correction parameters $f_a$, $f_b$.
 For a qualitative validation of the chosen values, I estimated the net emissivity from Eq.~\eqref{eq:emis2} using observations at times when global radiation was at maximum, i. e. $f \approx 1$, and compared it to the predicted values of $\varepsilon$ by both emissivity models.
-Fig.~\ref{fig:portugal_emis_both} shows ``observed'' and predicted $\varepsilon$ values, distinguishing between ``noon'' hours (between 10 am and 2 pm), when $L_n$ has a maximal magnitude, and other hours of the day.
+Fig.~\ref{fig:portugal_emis_both} shows ``observed'' and predicted $\varepsilon$ values, distinguishing between ``noon'' hours (between 10 am and 2 pm), when $R_{netL}$ has a maximal magnitude, and other hours of the day.
 $f$ was chosen to be $0.9 < f \leq 1$.
 Although some observation-derived values come near the predicted values at noon hours, both models generally overpredict the ``observed'' emissivity.
 
@@ -445,7 +450,7 @@ Although some observation-derived values come near the predicted values at noon 
   \centering
   \includegraphics[width=0.8\hsize]{./plot_emis_both_HS.pdf}
   \caption{Observation-derived vs. model-predicted net emissivity at HS station.
-           As $f \approx 1$ was assumed by choosing $0.9 < f \leq 1$, Eq.~\eqref{eq:emis2} is equivalent to $\varepsilon \approx - L_n / (\sigma (TA + 273.15~\text{K})^4)$ with observed $L_n$ and $TA$.}
+           As $f \approx 1$ was assumed by choosing $0.9 < f \leq 1$, Eq.~\eqref{eq:emis2} is equivalent to $\varepsilon \approx - R_{netL} / (\sigma (TA + 273.15~\text{K})^4)$ with observed $R_{netL}$ and $TA$.}
   \label{fig:portugal_emis_both}
 \end{figure}
 
@@ -494,23 +499,23 @@ with
 %
 $f$ itself is used in ECHSE for the calculation of the net incoming long-wave radiation, i.e. Eq.~\eqref{eq:emis2}:
 \begin{align*}
-  L_n = -f \varepsilon \sigma (TA + 273.15~\text{K})^4
+  R_{netL} = -f \varepsilon \sigma (TA + 273.15~\text{K})^4
 \end{align*}
 %
 with
 \begin{denseitem}
-  \item[] $L_n$: net incoming long-wave radiation, in W~m$^{-2}$~K$^{-4}$,
+  \item[] $R_{netL}$: net incoming long-wave radiation, in W~m$^{-2}$~K$^{-4}$,
   \item[] $\varepsilon$: net emissivity between atmosphere and ground (Sec.~\ref{ssec:parest_rad_emis}), no unit,
   \item[] $\sigma$: Stefan-Boltzmann constant, $5.670373 \times 10^{-8}$~W~m$^{-2}$~K$^{-4}$,
   \item[] $TA$: mean air temperature, in $^\circ$C.
 \end{denseitem}
 
 \textbf{Method.}
-The parameters can be estimated from Eq.~\eqref{eq:emis2} if sufficient data of $L_n$, $\varepsilon$, $TA$, $R_{inS}$, and $R_{inS,cs}$ are available.
+The parameters can be estimated from Eq.~\eqref{eq:emis2} if sufficient data of $R_{netL}$, $\varepsilon$, $TA$, $R_{inS}$, and $R_{inS,cs}$ are available.
 Shuttleworth gives values of $f_a = 1.35$, $f_b = -0.35$ for arid conditions and $f_a = 1.0$, $f_b = 0.0$ for humid conditions in \citet{maidment93}, p. 4.8.
 
 \textbf{Portugal.}
-First, the cloudiness correction $f$ was estimated from $L_n$, $TA$, and $\varepsilon$ where the net emissivity was calculated following both methods described in Sec.~\ref{ssec:parest_rad_emis}, i. e. Eq.~\eqref{eq:emis1} \citep{brunt32} and Eq.~\eqref{eq:emis3} \citep{idso69}.
+First, the cloudiness correction $f$ was estimated from $R_{netL}$, $TA$, and $\varepsilon$ where the net emissivity was calculated following both methods described in Sec.~\ref{ssec:parest_rad_emis}, i.~e.\ Eq.~\eqref{eq:emis1} \citep{brunt32} and Eq.~\eqref{eq:emis3} \citep{idso69}.
 The parameters $f_a$, $f_b$ could then be estimated through an adapted regression method:
 The condition $f_a + f_b = 1$ was not possible to be fulfilled by a linear regression of $f$ over $R_{inS}/R_{inS,cs}$ (the latter of which was derived by means of the previously estimated {\AA}ngstr\"om parameters).
 In order to get a model close to the data, I did a linear regression of the data (although the conditional mean didn't behave linearly and therefore did not fulfill the assumptions for a valid linear regression) and used the intersect (the value of $f$ at $R_{inS} = 0$) as estimation of $f_b$.
