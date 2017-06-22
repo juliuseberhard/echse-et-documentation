@@ -7,4 +7,6 @@ auto/
 *.ps
 *.tex~
 *.toc
-var_par_nodes.svg
+*.svg
+sw_scheme1.png
+sw_scheme2.png

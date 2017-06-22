@@ -1,0 +1,40 @@
+\BOOKMARK [0][-]{chapter.1}{Introduction}{}% 1
+\BOOKMARK [1][-]{section.1.1}{Overview of models, engines, parameters}{chapter.1}% 2
+\BOOKMARK [1][-]{section.1.2}{Study areas \205 available data}{chapter.1}% 3
+\BOOKMARK [2][-]{subsection.1.2.1}{Portugal}{section.1.2}% 4
+\BOOKMARK [2][-]{subsection.1.2.2}{Morocco}{section.1.2}% 5
+\BOOKMARK [0][-]{chapter.2}{Aims}{}% 6
+\BOOKMARK [0][-]{chapter.3}{Parameters: methods and results}{}% 7
+\BOOKMARK [1][-]{section.3.1}{Aerodynamic parameters}{chapter.3}% 8
+\BOOKMARK [1][-]{section.3.2}{Geographical parameters}{chapter.3}% 9
+\BOOKMARK [1][-]{section.3.3}{Radiation parameters}{chapter.3}% 10
+\BOOKMARK [2][-]{subsection.3.3.1}{Albedo \(alb\)}{section.3.3}% 11
+\BOOKMARK [2][-]{subsection.3.3.2}{Emissivity parameters \(emis\137a, emis\137b\)}{section.3.3}% 12
+\BOOKMARK [2][-]{subsection.3.3.3}{Soil heat factors \(f\137day, f\137night\)}{section.3.3}% 13
+\BOOKMARK [2][-]{subsection.3.3.4}{Cloudiness correction parameters \(fcorr\137a, fcorr\137b\)}{section.3.3}% 14
+\BOOKMARK [2][-]{subsection.3.3.5}{\305ngstr\366m parameters \(radex\137a, radex\137b\)}{section.3.3}% 15
+\BOOKMARK [1][-]{section.3.4}{Soil hydraulic parameters}{chapter.3}% 16
+\BOOKMARK [2][-]{subsection.3.4.1}{Capillary suction at maximum/minimum water stress \(wstressmax / wstressmin\)}{section.3.4}% 17
+\BOOKMARK [1][-]{section.3.5}{Vegetation parameters}{chapter.3}% 18
+\BOOKMARK [2][-]{subsection.3.5.1}{Canopy height \(cano\137height\)}{section.3.5}% 19
+\BOOKMARK [2][-]{subsection.3.5.2}{FAO crop factor \(crop\137faoref\)}{section.3.5}% 20
+\BOOKMARK [2][-]{subsection.3.5.3}{Makkink crop factor \(crop\137makk\)}{section.3.5}% 21
+\BOOKMARK [2][-]{subsection.3.5.4}{Extinction coefficient \(ext\)}{section.3.5}% 22
+\BOOKMARK [2][-]{subsection.3.5.5}{Radiation for half-maximum stomatal conductance \(glo\137half\)}{section.3.5}% 23
+\BOOKMARK [2][-]{subsection.3.5.6}{Note on the calculation of the canopy resistance rcs}{section.3.5}% 24
+\BOOKMARK [2][-]{subsection.3.5.7}{Leaf area index \(lai\)}{section.3.5}% 25
+\BOOKMARK [2][-]{subsection.3.5.8}{Vapor pressure stress parameter \(par\137stressHum\)}{section.3.5}% 26
+\BOOKMARK [2][-]{subsection.3.5.9}{Minimum stomatal resistance of single leafs \(res\137leaf\137min\)}{section.3.5}% 27
+\BOOKMARK [0][-]{chapter.4}{Comparison of evapotranspiration models}{}% 28
+\BOOKMARK [0][-]{chapter.5}{Sensitivity analysis}{}% 29
+\BOOKMARK [0][-]{chapter.6}{Evaluation of ECHSE methods}{}% 30
+\BOOKMARK [1][-]{section.6.1}{Global radiation glorad}{chapter.6}% 31
+\BOOKMARK [2][-]{subsection.6.1.1}{glorad: Portugal}{section.6.1}% 32
+\BOOKMARK [2][-]{subsection.6.1.2}{glorad: Morocco}{section.6.1}% 33
+\BOOKMARK [1][-]{section.6.2}{Net incoming radiation rad\137net}{chapter.6}% 34
+\BOOKMARK [2][-]{subsection.6.2.1}{rad\137net: Portugal}{section.6.2}% 35
+\BOOKMARK [1][-]{section.6.3}{Soilheat flux soilheat}{chapter.6}% 36
+\BOOKMARK [2][-]{subsection.6.3.1}{soilheat: Portugal}{section.6.3}% 37
+\BOOKMARK [0][-]{chapter.7}{Results: overview}{}% 38
+\BOOKMARK [1][-]{section.7.1}{Parameters}{chapter.7}% 39
+\BOOKMARK [0][-]{chapter.8}{Conclusion}{}% 40

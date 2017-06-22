@@ -5,10 +5,12 @@
 \usepackage[margin=0.8in]{geometry}
 \usepackage{graphics}
 \usepackage{graphicx}
+\usepackage{hyperref}
 \usepackage[round]{natbib}
 \usepackage{pst-node}
+%\usepackage{tabto}
 %\usepackage{textcomp}  % \textregistered
-\usepackage[hyphens,obeyspaces]{url}
+%\usepackage[hyphens,obeyspaces]{url}
 
 % settings
 \bibliographystyle{plainnat}
@@ -52,12 +54,13 @@ The engine-specific names (identifiers) of variables and parameters are written 
 E.g., extraterrestrial radiation = $R_{ex}$ = \verb!radex!.
 Terms that describe parts of the ECHSE architecture are written in \textsf{sans-serif}.
 
+\newpage
 \section{Overview of models, engines, parameters} \label{sec:intro_overview}
 
 \textbf{Models.}
 The physical $et$ models implemented in ECHSE originated from two approaches:
-First, the empirical approach of \citet{makkink57} as simplified by \citet{debruin87} (for applications during the growing season) uses global radiation (explicitly), air pressure (implicitly through the use of the psychrometric `constant'), and temperature (implicitly through the use of the slope of the saturated vapor pressure curve and the psychrometric `constant') as predictors for the potential evapotranspiration.
-Secondly, the consideration of the net energy available for evaporating water from an open water surface was incorporated into earlier empirical findings by Penman and supplemented with the concept of surface and aerodynamical resistances for uniformly vegetated and completely covered ground by \citet{monteith65} to form the Penman-Monteith model.
+First, the empirical approach of \citet{makkink57} as simplified by \citet{debruin87} (for applications during the growing season) uses global radiation (explicitly), air pressure (implicitly through the use of the psychrometric `constant'), and temperature (implicitly through the use of the slope of the saturated vapor pressure curve and the psychrometric `constant') as predictors for $et_{pot}$.
+Secondly, the consideration of the net energy available for evaporating water from an open water surface was incorporated into empirical findings by Penman and supplemented with the concept of surface and aerodynamical resistances for uniformly vegetated and completely covered ground by \citet{monteith65} to form the Penman-Monteith model.
 For a nice overview of the Makkink (Makk) and the Penman-Monteith (PM) model and how they are theoretically related, see \citet{debruin87}.
 
 The widely used PM formula was later simplified for rough estimates of single crops by the Food and Agriculture Organization of the United Nations FAO \citep{fao98} (FAO model) and improved for sparse crops by \citet{shuttleworth85} (SW model).
@@ -67,7 +70,7 @@ It contains keywords describing the way how a type of $et$ is simulated in the r
 \emph{Reference} $et$ quantifies the evapotranspiration from reference surfaces which usually are made of densely growing, clipped grass which always has a sufficient water supply for transpirating at a maximum rate.
 \emph{Potential} $et$ is the maximum possible evapotranspiration from a certain (not necessarily reference) surface which also has no limited water supply.
 \emph{Actual} $et$ takes into account factors that limit the water supply.
-E.g., potential $et$ in the Makk model is calculated by multiplying the reference $et$ with a crop factor while the potential $et$ is multiplied with a soil moisture factor for determining the actual $et$.
+E.\ g., potential $et$ in the Makk model is calculated by multiplying the reference $et$ with a crop factor while the potential $et$ is multiplied with a soil moisture factor for determining the actual $et$.
 
 %Makkink:
 %\begin{align}
@@ -98,13 +101,15 @@ E.g., potential $et$ in the Makk model is calculated by multiplying the referenc
   \label{tab:models}
 \end{table}
 
+\noindent
 \textbf{Engines.}
-All possibilities regarding the type of evapotranspiration (potential or actual), the model (Makk, PM, FAO, or SW), and other calculation methods are generally included in one engine.
-The engine requires the user to choose between the possible combinations of methods and follows them through the calculation process.
-Thus it is possible to directly compare the outputs of different methods with the same set of parameters which is supplied by the user.
+All possibilities regarding the type of $et$ (potential or actual), the model (Makk, PM, FAO, or SW), and other calculation methods are generally included in one ECHSE engine.
+It requires the user to choose between possible combinations of methods and follows them through the calculation process.
+Thus it is possible to directly compare the outputs of different methods with the same set of parameters supplied by the user.
 
+\noindent
 \textbf{Parameters.}
-The engine parameters can be grouped into
+Physically, the engine parameters can be grouped into
 \begin{denseitem}
   \item[--] aerodynamic parameters,
   \item[--] geographical parameters,
@@ -113,8 +118,8 @@ The engine parameters can be grouped into
   \item[--] vegetation parameters,
 \end{denseitem}
 %
-according to their physical role, and will be discussed in this order in Ch.~\ref{ch:parest}.
-Within the ECHSE engines, parameters are grouped into the types
+and will be discussed in this order in Ch.~\ref{ch:parest}.
+Within the ECHSE engines, parameters are grouped into
 \begin{denseitem}
   \item[--] \textsf{paramNum} (object-specific scalar parameters),
   \item[--] \textsf{sharedParamNum} (group-specific scalar parameters),
@@ -214,12 +219,14 @@ Parameters of the \textsf{inputExt} type can be found together with the actual e
 
 In Ch.~\ref{ch:results}, an overview of the estimated parameter values is given, grouped into the \textsf{paramNum}, \textsf{sharedParamNum}, and \textsf{inputExt} parameter types.
 
+\newpage
 \section{Study areas -- available data} \label{sec:intro_areas}
 
 \subsection{Portugal} \label{ssec:intro_areas_portugal}
 
 The \emph{Herdade da Machuqueira do Grou} area is a 2,500~ha sized woodland in the Santar\'em district, between the towns of Coruche and Foros do Arr$\tilde{\text{a}}$o, Portugal.
-The vegetation is dominated by cork oak trees and shrubs.
+The vegetation is dominated by cork oak trees (\emph{Quercus suber}) and shrubs, e.\ g.\ \emph{Cistus} rockroses and grasses.
+
 A part of the meteorological data (measured at a height of 2 m) comes from two measurement stations within the woodland.
 One station is located between trees under the open sky (\emph{Hauptstation}, HS), the other was set up under a cork oak (\emph{Nebenstation A}, NSA).
 The data for both stations include
@@ -239,9 +246,9 @@ The data for both stations include
 \end{denseitem}
 %
 they were recorded hourly.
-An evaporation flux was determined through the use of the Bowen ratio, i. e. the ratio of sensible to latent heat flux.
+An evaporation flux was determined through the use of the Bowen ratio, i.\ e.\ the ratio of sensible to latent heat flux.
 
-Additional meteorological data (measured at a height of 22~m) come from an eddy covariance tower (build by LI-COR Environmental) in the area (set up at UTM coordinates 557,689.5 easting, 4,332,375.0 northing; NSB\_TOWER in Fig.~\ref{fig:map_coruche}).
+Additional meteorological data (measured at a height of 20~m) come from an eddy covariance tower (build by \emph{LI-COR Environmental}) in the area (NSB\_TOWER in Fig.~\ref{fig:map_coruche}).
 They include
 \begin{denseitem}
   \item[--] net short-wave radiation $R_{netS}$,
@@ -253,8 +260,8 @@ They include
   \item[--] atmospheric pressure,
   \item[--] wind speed,
   \item[--] wind direction,
-  \item[--] sensible heat flux, including a quality flag following Foken \& Mauder,
-  \item[--] latent heat flux, including a quality flag following Foken \& Mauder;
+  \item[--] sensible heat flux, including quality flag (Foken \& Mauder),
+  \item[--] latent heat flux, including quality flag;
 \end{denseitem}
 %
 they were recorded half-hourly.
@@ -266,6 +273,16 @@ they were recorded half-hourly.
   \label{fig:map_coruche}
 \end{figure}
 
+\begin{figure}[t]
+  \centering
+  \includegraphics[width=1.0\hsize]{./sw_scheme}
+  \caption{SW model setup at eddy tower site (left) and at HS \& NSA (right).
+           Screen height 20~m (left) and 2~m (right).
+           $H$: sensible heat flux, $\lambda E$: latent heat flux, $a$: .}
+  \label{fig:sw_scheme}
+\end{figure}
+
+\newpage
 \subsection{Morocco} \label{ssec:intro_areas_morocco}
 
 The study area is a citrus orchard near the village Ait Cheikh, southwest of Marrakesh, lying in the Haouz plain north of the Atlas mountains \citep{mroos14}.
@@ -292,8 +309,8 @@ The aims of my work are:
   \item[--] the estimation of engine parameters through transfer functions and model calibration (Ch.~\ref{ch:parest}),
   \item[--] comparison of the different evapotranspiration models (Ch.~\ref{ch:modelcomp}),
   \item[--] sensitivity analysis of engine parameters (Ch.~\ref{ch:sensana}),
-  \item[--] evaluation of single methods employed in the $et$ models (Ch.~\ref{ch:methodcomp}).
-  \item[--] Which input data do we still need? (Ch.~\ref{ch:conclusion})
+  \item[--] evaluation of a few single methods employed in the $et$ models (Ch.~\ref{ch:methodcomp}).
+  \item[--] What might still be to be done? (Ch.~\ref{ch:conclusion})
 \end{itemize}
 
 %................................................................................
@@ -314,6 +331,7 @@ They are discussed in separate sections to specify the problems and possibilitie
 
 Where parameters appear in their own sections, the discussion follows the outline \emph{Basics -- Methods -- Notes -- Portugal -- Morocco}.
 
+\newpage
 \section{Aerodynamic parameters} \label{sec:parest_aero}
 
 All estimated or adopted values were employed for both Portugal and Morocco because the aerodynamic conditions are similar.
@@ -334,15 +352,17 @@ In the calculation of the aerodynamic resistance between canopy and reference le
 Following \citet{shuttleworth90}, both of these are dependent on the \textbf{roughness length of the bare substrate} $z_0$ (\verb!rough_bare!) and the effective mean \textbf{drag coefficient of the vegetation} $c_d$ (\verb!drag_coef!) as well as on the leaf area index and the canopy height (Sec. \ref{sec:parest_veg}).
 The values of $z_0$ and $c_d$ were numerically estimated by the authors and are adopted here as 0.01~m and 0.07, respectively.
 
+\newpage
 \section{Geographical parameters} \label{sec:parest_geo}
 
 Each model employs 3 or less geographical parameters for calculating the radiation balance: \textbf{latitude} $\varphi$ (\verb!lat!), \textbf{longitude} $L_m$ (\verb!lon!), \textbf{elevation} $h$ (\verb!elev!).
-For the sites in Portugal, the locations were given as UTM coordinates (HS: 557,640.5~m easting, 4,332,523.5~m northing; NSA: 557,717.0~m easting, 4,332,408.0~m northing; both in UTM zone~29S, see Fig.~\ref{fig:map_coruche}) from which I could derive $\varphi = 39.14^\circ$~N and $L_m= 8.33^\circ$~W for both field stations.
+For the sites in Portugal, the locations were given as UTM coordinates (HS: 557,640.5~m easting, 4,332,523.5~m northing; NSA: 557,717.0~m easting, 4,332,408.0~m northing; tower: 557,689.5~m easting, 4,332,375.0~m northing; all in UTM zone~29S, see Fig.~\ref{fig:map_coruche}) from which I could derive $\varphi = 39.14^\circ$~N and $L_m= 8.33^\circ$~W for both field stations.
 The actual distance of 139~m between the stations corresponds to less than $0.01^\circ$ and was therefore taken as 0.
 A common value for $h$ of the Portugal sites was estimated from local elevation maps (\emph{floodmap.net}) as 160~m above sea level.
 
 For Morocco, $\varphi = 31.50^\circ$~N, $L_m = 8.14^\circ$~W, and $h = 464$~m~a.s.l. were taken from \citet{mroos14}.
 
+\newpage
 \section{Radiation parameters} \label{sec:parest_rad}
 
 \subsection{Albedo (\texttt{alb})} \label{ssec:parest_rad_alb}
@@ -359,10 +379,12 @@ with
   \item[] $R_{inS}$: incoming short-wave radiation (\verb!glorad!), in W~m$^{-2}$.
 \end{denseitem}
 
+\noindent
 \textbf{Method.}
 It can be estimated from observations of $R_{inS}$ and $R_{outS}$ or from literature values for various land surfaces.
 The albedo of a surface can change over time and is supplied as a time series in ECHSE.
 
+\noindent
 \textbf{Portugal.}
 The measurements of the short-wave radiation components at the stations HS and NSA comprised hourly time series between April 7 and August 4, 2014.
 The albedo was derived as a total mean of the hourly $R_{outS}/R_{inS}$ ratio.
@@ -376,10 +398,12 @@ Although the observations showed a distinct development over time (Fig.~\ref{fig
   \label{fig:portugal_alb}
 \end{figure}
 
+\noindent
 \textbf{Morocco.}
 None of the measurements did include $R_{outS}$ data, so the albedo has been estimated as constantly 0.3, judging by the descriptions of the surfaces.
 These are likely to have $0.25 < \mu < 0.4$, where 0.25 is the albedo of green grass \citep{markvart03} and 0.4 that of dry sand \citep{tetzlaff83}.
 
+\newpage
 \subsection{Emissivity parameters (\texttt{emis\_a}, \texttt{emis\_b})} \label{ssec:parest_rad_emis}
 
 \textbf{Basics.}
@@ -413,10 +437,12 @@ with
   \item[] ${TA}$: mean air temperature, in $^\circ$C.
 \end{denseitem}
 
+\noindent
 \textbf{Method.}
 The parameters $\varepsilon_a$, $\varepsilon_b$ can be estimated through Eqs.~\eqref{eq:emis2} and \eqref{eq:emis1} if sufficient data of $R_{netL}$, $TA$, $e$, and $f$ are available.
 If not, one can look up suggested values by \citet{maidment93} (p.~4.7), i. e. $\varepsilon_a = 0.34$ and $\varepsilon_b = -0.14$ for ``average conditions'' and general ranges of 0.34 to 0.44 for $\varepsilon_a$ and $-0.14$ to $-0.25$ for $\varepsilon_b$, derived from data in \citet{fao77}.
 
+\noindent
 \textbf{Note.}
 The second method for calculating $\varepsilon$ uses air temperature as the only predictor for $\varepsilon$ without the need of $\varepsilon_a$, $\varepsilon_b$, $e$ and was published in \citet{maidment93} based on \citet{idso69}:
 \begin{align} \label{eq:emis3}
@@ -437,6 +463,7 @@ This means that a well-founded calculation of the emissivity is the requirement 
 Since it was not clear which method would provide a better value of $\varepsilon$, I decided to use both methods and compare the outputs of the models.
 A simple sensitivity analysis indicated that the $et$ models of PM and SW could only show a small, if any, reaction to changing the emissivity model.
 
+\noindent
 \textbf{Portugal.}
 I chose default values of $\varepsilon_a = 0.34$ and $\varepsilon_b = -0.14$, as suggested for average conditions by \citet{maidment93}.
 The values could not be estimated specifically because the cloudiness correction $f$ was not known for the study site.
@@ -454,10 +481,12 @@ Although some observation-derived values come near the predicted values at noon 
   \label{fig:portugal_emis_both}
 \end{figure}
 
+\noindent
 \textbf{Morocco.}
 As for Portugal, I chose $\varepsilon_a = 0.34$ and $\varepsilon_b = -0.14$.
 The values could not be estimated specifically because data of the net long-wave radiation and the cloudiness correction were missing.
 
+\newpage
 \subsection{Soil heat factors (\texttt{f\_day}, \texttt{f\_night})} \label{ssec:parest_rad_f}
 
 \textbf{Basics.}
@@ -474,14 +503,17 @@ with
   \item[] $R_{net}$: net incoming short-wave and long-wave radiation (\verb!rad_net!), in W~m$^{-2}$.
 \end{denseitem}
 
+\noindent
 \textbf{Portugal.}
 Since the data didn't include measurements of $R_{net}$, I used the results of internally calculated values of $R_{net}$ and measurements of $G_{soil}$ for calculating $f_{day}$, $f_{night}$ hourly from Eqs.~\eqref{eq:f1}, \eqref{eq:f2}.
 The distinction of the time series into daytime and nighttime was made using the \emph{RAtmosphere::suncalc} procedure by Gionata Biavati, which provided sunrise and sunset times for the study site.
 Averaging over all hours gave the results.
 
+\noindent
 \textbf{Morocco.}
 ---
 
+\newpage
 \subsection{Cloudiness correction parameters (\texttt{fcorr\_a}, \texttt{fcorr\_b})} \label{ssec:parest_rad_fcorr}
 
 \textbf{Basics.}
@@ -510,10 +542,12 @@ with
   \item[] $TA$: mean air temperature, in $^\circ$C.
 \end{denseitem}
 
+\noindent
 \textbf{Method.}
 The parameters can be estimated from Eq.~\eqref{eq:emis2} if sufficient data of $R_{netL}$, $\varepsilon$, $TA$, $R_{inS}$, and $R_{inS,cs}$ are available.
 Shuttleworth gives values of $f_a = 1.35$, $f_b = -0.35$ for arid conditions and $f_a = 1.0$, $f_b = 0.0$ for humid conditions in \citet{maidment93}, p. 4.8.
 
+\noindent
 \textbf{Portugal.}
 First, the cloudiness correction $f$ was estimated from $R_{netL}$, $TA$, and $\varepsilon$ where the net emissivity was calculated following both methods described in Sec.~\ref{ssec:parest_rad_emis}, i.~e.\ Eq.~\eqref{eq:emis1} \citep{brunt32} and Eq.~\eqref{eq:emis3} \citep{idso69}.
 The parameters $f_a$, $f_b$ could then be estimated through an adapted regression method:
@@ -531,9 +565,11 @@ Fig.~\ref{fig:portugal_fcorr} shows the calculated cloudiness correction and the
   \label{fig:portugal_fcorr}
 \end{figure}
 
+\noindent
 \textbf{Morocco.}
 Data of the net long-wave radiation were missing, thus I chose the suggested values for arid conditions in \citet{maidment93}.
 
+\newpage
 \subsection{{\AA}ngstr\"om parameters (\texttt{radex\_a}, \texttt{radex\_b})} \label{ssec:parest_rad_radex}
 
 \textbf{Basics.}
@@ -552,6 +588,7 @@ with
   \item[] $N$: maximum possible sunshine duration, in hours.
 \end{denseitem}
 
+\noindent
 \textbf{Method 1.}
 Since $R_{ex}$ and $N$ are calculated internally and astronomically based, the uncertainty of the estimation through Eq.~\eqref{eq:radex1} should only depend on the observed global radiation (by definition, $n$ follows from $R_{inS}$).
 Note that the equation as written represents only daily mean values of $R_{inS}$:
@@ -566,6 +603,7 @@ If observations for either of these cases are available, Eqs.~\eqref{eq:radex1} 
 Averaging over all days would then determine the parameters.
 Problem: It might be difficult to find either days when $n=N$ or days when $n=0$.
 
+\noindent
 \textbf{Method 2.}
 Another way of estimating $a_s$ and $b_s$ based on shorter time intervals (in our case, hourly) would be
 \begin{align}
@@ -582,6 +620,7 @@ For finding unique solutions, both Eqs.~\eqref{eq:radex4} and \eqref{eq:radex5} 
 The biggest problem of estimating the parameters with subdaily data is that extreme values (max, min) can result from measuring errors and statistical outliers.
 Taking very low quantiles of the $R_{inS}/R_{ex}$ distribution and applying an upper limit for the max ($a_s + b_s$ can't be greater than 1) would probably avoid estimating $a_s$ as too low and $b_s$ as too high.
 
+\noindent
 \textbf{Portugal.}
 Global radiation was measured hourly at the local weather station in Portugal.
 Therefore I chose to estimate \verb!radex_a! and \verb!radex_b! with Eqs.~\eqref{eq:radex4} and \eqref{eq:radex5}.
@@ -606,9 +645,11 @@ These choices proved successful in computing clear-sky radiation that didn't exc
   \label{fig:portugal_radex2}
 \end{figure}
 
+\noindent
 \textbf{Morocco.}
 ---
 
+\newpage
 \section{Soil hydraulic parameters} \label{sec:parest_soil}
 
 \verb!wc_sat!, \verb!wc_res!, \verb!wc_pwp!, \verb!wc_etmax!, \verb!bubble!, \verb!pores_ind!, \verb!wstressmin!, \verb!wstressmax!, \verb!soil_dens!, \verb!rss_a!, \verb!rss_b!.
@@ -634,19 +675,22 @@ with
   \item[] $\psi_{s,min}$: capillary suction at minimum water stress (\verb!wstressmin!), in hPa.
 \end{denseitem}
 
+\noindent
 \textbf{Method.}
 Since water stress for a plant is at maximum when it is not able to detract water from the soil anymore, it's a plausible decision to set $\psi_{s,max}$ to the defined \citep{scheffer10} permanent wilting point of $10^{4.2}$~hPa.
 $\psi_{s,min}$ is more difficult to determine but simple sensitivity analyses showed almost no influence of a variation of $\psi_{s,min}$ between 0 and 500~hPa (a range from full saturation to above the upper range of field capacity at $10^{2.5}$ hPa) on the simulated actual evapotranspiration.
 
+\noindent
 \textbf{Portugal.}
 \citet{gazdar16} measured pre-dawn capillary suctions at both study sites (HS and NSA) for different water contents.
 At HS, for a minimum water content of 0.05~m$^3$~m$^{-3}$, the results were $\psi_{HS} = 1.31$~MPa for \emph{Cistus crispus} vegetation and $\psi_{HS} = 0.5$~MPa for \emph{Quercus suber}.
 At NSA, for a minimum water content of 0.10~m$^3$~m$^{-3}$, $\psi_{NSA} = 1.4$~MPa for \emph{Cistus} and $\psi_{NSA} = 0.89$~MPa for \emph{Quercus}.
 
-
+\noindent
 \textbf{Morocco.}
 
 
+\newpage
 \section{Vegetation parameters} \label{sec:parest_veg}
 
 \subsection{Canopy height (\texttt{cano\_height})} \label{ssec:parest_veg_canoheight}
@@ -655,14 +699,17 @@ At NSA, for a minimum water content of 0.10~m$^3$~m$^{-3}$, $\psi_{NSA} = 1.4$~M
 In the calculation of different aerodynamic resistances, the average canopy height of the vegetation $h_{cano}$ (\verb!cano_height!) is an important parameter.
 The dependent quantities include, among others, the displacement height and the roughness length of the vegetation.
 
+\noindent
 \textbf{Method.}
 The canopy height can be measured in situ or estimated species- and climate-dependently from literature.
 
+\noindent
 \textbf{Portugal.}
-At HS, the predominant species are grasses for which I assumed a mean canopy height of 0.20~m.
-At NSA, the total heights of the surrounding trees were measured.
+At HS and NSA, the predominant species of the understory are grasses and shrubs (e.\ g., \emph{Cistus crispus}) for which I assumed a mean canopy height of 0.20~m.
+At the tower, the total heights of the surrounding trees were measured.
 The mean is 7.98~m for a sample size of 88 and was used as canopy height.
 
+\newpage
 \subsection{FAO crop factor (\texttt{crop\_faoref})} \label{ssec:parest_veg_cropfaoref}
 
 \textbf{Basics.}
@@ -670,16 +717,19 @@ The modified Penman-Monteith formula as published by the FAO \citep{fao98} gives
 The FAO crop factor (\verb!crop_faoref!), which scales the total $et$ flux, is the only parameter in the equation and specific to a site, i.e. a crop.
 A value of 1 corresponds to the reference crop (well-watered grass of 0.12~m height, 70~s~m$^{-1}$ \citep{fao98} or 69~s~m$^{-1}$ \citep{shuttleworth07} surface resistance, 0.23 albedo), values for other types of vegetation can be looked up online.
 
+\noindent
 \textbf{Portugal, Morocco.}
 The crop factor was set to 1 for reference evapotranspiration.
 Since the FAO equation is just a simplification of the Penman-Monteith equation, I preferred using the original PM model for the study cases and using the FAO reference results only for a subsumption of the different models.
 
+\newpage
 \subsection{Makkink crop factor (\texttt{crop\_makk})} \label{ssec:parest_veg_cropmakk}
 
 \textbf{Basics.}
 The Makkink model expresses a simple empirical relationship between the global radiation, the air temperature, and the potential evapotranspiration of a crop.
 The type of crop is regarded in terms of the Makkink crop factor (\verb!crop_makk!), which scales the $et$ flux compared to that of a reference crop (well-watered grass of 0.08--0.13~m height, \citealt{feddes87}).
 
+\noindent
 \textbf{Method.}
 It was estimated from the leaf area index (Sec.~\ref{ssec:parest_veg_lai}) by the affine relation
 \begin{align} \label{eq:cropmakk}
@@ -693,18 +743,24 @@ with
 %
 This relation was derived in the ECHSE documentation from data of \citet{feddes87} and \citet{ludwig06}.
 
+\noindent
 \textbf{Portugal.}
+At HS and NSA, the crop factor derived from Eq.~\eqref{eq:cropmakk} is 0.51. At the eddy tower station, it is 0.60.
 
+\noindent
 \textbf{Morocco.}
+---
 
+\newpage
 \subsection{Extinction coefficient (\texttt{ext})} \label{ssec:parest_veg_ext}
 
+\newpage
 \subsection{Radiation for half-maximum stomatal conductance (\texttt{glo\_half})} \label{ssec:parest_veg_glohalf}
 
 \textbf{Basics.}
 When using the PM or SW model, the modeler is interested in the bulk surface resistance of a canopy, $r_{cs}$, which is practically not measurable.
 ECHSE provides two ways of calculating $r_{cs}$ from the stomatal resistance of a single average leaf, which is measurable.
-If the user decides to use the formula of \citet{saugier91}, the incoming short-wave radiation at which the stomatal conductance is half of its maximum ($g_{srad}$, \verb!glo_half!) will be needed.
+If the user decides to use the formula of \citet{saugier91} -- i.\ e.\ \verb!choice_rcs! = 2 --, the incoming short-wave radiation at which the stomatal conductance is half of its maximum ($g_{srad}$, \verb!glo_half!) will be needed.
 In their derivation of the formula, the authors assume that the actual stomatal resistance of a leaf is hyperbolically dependent on the incident short-wave radiation,
 \begin{align} \label{eq:glohalf1}
   r_{l,act} = r_{l,min} \frac{R_{inS} + g_{srad}}{R_{inS}}
@@ -725,6 +781,7 @@ After integrating $r_{l,act}$ over all leaves, the resulting formula reads
   r_{cs} = \epsilon r_{l,min} / \ln \frac{\epsilon R_{inS} + g_{srad}}{\epsilon R_{inS} \exp(-\epsilon LAI) + g_{srad}}.
 \end{align}
 
+\noindent
 \textbf{Method.}
 The parameter of interest, $g_{srad}$, can be determined by measurements of the stomatal conductance/resistance of multiple leaves over a broad range of radiation conditions and is assumed to be specific of a species.
 \citet{saugier91} collected some values,
@@ -738,18 +795,22 @@ The parameter of interest, $g_{srad}$, can be determined by measurements of the 
 %
 which I used for the estimation of $g_{srad}$ through model calibration (?).
 
+\noindent
 \textbf{Note 1.}
 Since conductance is equal to inverse resistance, $g_{srad}$ corresponds to the global radiation at which the stomatal \emph{resistance} is double of its minimum value.
 
+\noindent
 \textbf{Note 2.}
 The described approach of \citet{saugier91} was applied in the WASA model for semi-arid conditions \citep{guentner02} and is implemented in ECHSE.
 In both cases the minimum resistance of a single leaf in Eq.~\eqref{eq:glohalf2} was replaced by the actual resistance of a single leaf, $r_{l,act}$.
 This adaption is justified because $r_{l,act}$, as used in WASA and ECHSE, represents the minimum stomatal resistance regarding all other factors than radiation, which was used as $r_{l,min}$ by \citet{saugier91} for their derivation of Eq.~\eqref{eq:glohalf2}.
 
+\noindent
 \textbf{Note 3.}
-The other method for $r_{cs}$, from \citet{shuttleworth85}, uses the leaf area index as the only predictor.
+The other method for $r_{cs}$, from \citet{shuttleworth85} -- \verb!choice_rcs! = 1 --, uses the leaf area index as the only predictor.
 It is discussed in the next section since two different versions of the equation exist in the literature.
 
+\newpage
 \subsection{Note on the calculation of the canopy resistance $r_{cs}$} \label{ssec:parest_veg_notercs}
 
 Instead of using Eq.~\eqref{eq:glohalf2} from \citet{saugier91}, the canopy stomatal resistance $r_{cs}$ can be estimated simply from the stomatal resistance of a single average leaf in the canopy and the leaf area index (Sec.~\ref{ssec:parest_veg_lai}).
@@ -764,45 +825,99 @@ with
   \item[] $\overline{r_{l,act}}$: actual stomatal resistance of a single average leaf.
 \end{denseitem}
 %
-The factor $1/2$ might come from the consideration of both sides of an amphistomatous leaf when calculating the canopy resistance whereas the resistance of a single leaf is usually measured for one side only.
-However, this is my personal conjecture.
+There is no explanation of the factor $1/2$ in the original publication but it probably comes from the consideration of both sides of an amphistomatous leaf when calculating the canopy resistance whereas the resistance of a single leaf is usually measured for one side only.
+At least \citet{hanan97} give this explanation (p.\ 558).
 
 The other version of the above relationship (Eq.~\ref{eq:notercs1}) is
 \begin{align} \label{eq:notercs2}
   r_{cs} = \frac{\overline{r_{l,act}}}{LAI_{active}} = \frac{\overline{r_{l,act}}}{0.5 LAI}
 \end{align}
 %
-and was published by the FAO (\url{www.fao.org/docrep/X0490E/x0490e06.htm}, Box 5) as an estimate for a reference crop, i. e. clipped, densely growing grass where only the upper half of the canopy -- expressed as active leaf area index $LAI_{active}$ -- is considered to contribute to mass and heat transport toward the atmosphere \citep{fao98}.
+and was published by the FAO (\url{www.fao.org/docrep/X0490E/x0490e06.htm}, Box 5) as an estimate for a reference crop, i.\ e.\ clipped, densely growing grass where only the upper half of the canopy -- expressed as active leaf area index $LAI_{active}$ -- is considered to contribute to mass and heat transport toward the atmosphere \citep{fao98}.
 The underlying assumption in Eq.~\eqref{eq:notercs2} apparently takes into account only one side of the leaves.
 This estimate of a reference canopy resistance was used in the SWAT model.
 
 ECHSE currently employs the ``original'' version of \citet{shuttleworth85} (Eq.~\ref{eq:notercs1}) and there is no good reason yet to use Eq.~\eqref{eq:notercs2} instead.
 (Sensitivity?)
 
+\newpage
 \subsection{Leaf area index (\texttt{lai})} \label{ssec:parest_veg_lai}
 
 \textbf{Basics.}
 Especially in estimating surface resistances of the vegetation and other vegetation parameters, the leaf area index $LAI$ (\verb!lai!) plays an important role.
-It is the average one-sided area of all leaves of a plant that grow above one square meter of the ground.
+It is the average one-sided area of all leaves growing above one square meter of the ground.
 
+\noindent
 \textbf{Method.}
 $LAI$ can be measured in situ by collecting all plants from sample sites within the study area.
 Where direct measurements are difficult to realize, $LAI$ can be estimated from data of plant allometry, usage of dry masses and specific leaf area indices, or light measurements.
 
+\noindent
 \textbf{Portugal.}
 For both sites, $LAI$ was measured at 25 sample sites within a square of 25~m side length.
-The results were 0.778 at HS and 1.397 at NSA.
+The results were 0.778 for the shrubs at HS \& NSA, and 1.397 for the trees at the tower station.
 
+\noindent
 \textbf{Morocco.}
-From the descriptions of the study area, a photograph, and a sketch of a part of the orchard \citep{mroos14}, I could estimate an average $LAI$.
+From the descriptions of the study area, a photograph, and a sketch of a part of the orchard \citep{mroos14}, I could estimate an average $LAI$ as follows.
 \citet{jahn79} reported leaf area indices for single citrus trees between 3.7 and 15.1 with a mean of 8.8.
 Using this value for the citrus-covered area, a $LAI$ of 0.5 for the sparsely grass-covered areas between the trees, and a tree cover portion in the area of roughly 0.3 (patterns with one tree of canopy radius 1.5~m per $6 \times 4$~m$^2$ plot), the estimated effective value is $LAI$ = 2.99.
 
-\subsection{(\texttt{par\_stressHum})} \label{ssec:parest_veg_parstresshum}
+\newpage
+\subsection{Vapor pressure stress parameter (\texttt{par\_stressHum})} \label{ssec:parest_veg_parstresshum}
 
 \textbf{Basics.}
+The actual stomatal resistance of a leaf which is used to derive the canopy stomatal resistance $r_{cs}$ (Sec.~\ref{ssec:parest_veg_notercs}) involves stress factors resulting from soil water stress ($\Phi_{wat}$) and water vapor stress ($\Phi_{vap}$), where
+\begin{align*}
+  \Phi_{vap} = \frac{1}{1 + a_{vap} D}
+\end{align*}
+%
+with
+\begin{denseitem}
+  \item[] $a_{vap}$: vapor pressure stress parameter (\verb!par_stressHum!), in hPa$^{-1}$,
+  \item[] $D$: water vapor pressure deficit, in hPa.
+\end{denseitem}
 
-\subsection{(\texttt{res\_leaf\_min})} \label{ssec:parest_veg_resleafmin}
+\noindent
+\textbf{Method.}
+$a_{vap}$ is a plant-specific parameter. \citet{hanan97} give values for fitted stomatal conductance models for some species of the arid Sahel:
+\begin{denseitem}
+  \item[--] \emph{Guiera senegalensis} (C3 shrub): 0.023373 hPa$^{-1}$,
+  \item[--] \emph{Mitracarpus scaber} (C3 forb): 0.070084 hPa$^{-1}$,
+  \item[--] \emph{Digitaria gayanus}\footnote{This name seems to be used almost only in this paper, not sure which plant they mean, maybe \emph{Andropogon gayanus}.} (C4 grass): 0.017004 hPa$^{-1}$,
+  \item[--] \emph{Pennisetum glaucum} (C4 cereal grass): 0.013346 hPa$^{-1}$.
+\end{denseitem}
+%
+The average value of 0.03~hPa$^{-1}$ was used by \citet{guentner02} in the WASA model.
+
+\noindent
+\textbf{Portugal.}
+I used the value from WASA, $a_{vap} = 0.03$~hPa$^{-1}$.
+
+\noindent
+\textbf{Morocco.}
+$a_{vap} = 0.03$~hPa$^{-1}$.
+
+\newpage
+\subsection{Minimum stomatal resistance of single leafs (\texttt{res\_leaf\_min})} \label{ssec:parest_veg_resleafmin}
+
+\textbf{Basics.}
+The minimum stomatal resistance of single leafs $r_{l,min}$ is used in the calculation of the actual stomatal resistance $r_{l,act}$.
+See Sec.~\ref{ssec:parest_veg_glohalf} for the details.
+
+\noindent
+\textbf{Method.}
+Similarly to $g_{srad}$ (Sec.~\ref{ssec:parest_veg_glohalf}), \citet{saugier91} give values for some species (rather for conductance! ...),
+\begin{denseitem}
+  \item[--] alfalfa: 0.06~s~mm$^{-1}$ \citep{katerji83},
+  \item[--] sunflower: xxxxx \citep{berger73},
+  \item[--] Scots pine: xxxxxx \citep{lohammar80} and 150~W~m$^{-2}$ \citep{jarvis81},
+  \item[--] apple tree: xxxxxxxx \citep{warrit80},
+  \item[--] oil palm: xxxxx \citep{dufrene89},
+\end{denseitem}
+%
+which I used for the estimation of $g_{srad}$ through model calibration (?).
+
 
 %................................................................................
 
@@ -816,6 +931,7 @@ Using this value for the citrus-covered area, a $LAI$ of 0.5 for the sparsely gr
 
 \chapter{Evaluation of ECHSE methods} \label{ch:methodcomp}
 
+\newpage
 \section{Global radiation \texttt{glorad}}
 
 \subsection{\texttt{glorad}: Portugal}
@@ -834,8 +950,10 @@ Using this value for the citrus-covered area, a $LAI$ of 0.5 for the sparsely gr
   \label{fig:portugal_NSA_glorad1}
 \end{figure}
 
+\newpage
 \subsection{\texttt{glorad}: Morocco}
 
+\newpage
 \section{Net incoming radiation \texttt{rad\_net}}
 
 \subsection{\texttt{rad\_net}: Portugal}
@@ -854,6 +972,7 @@ Using this value for the citrus-covered area, a $LAI$ of 0.5 for the sparsely gr
   \label{fig:portugal_NSA_radnet1}
 \end{figure}
 
+\newpage
 \section{Soilheat flux \texttt{soilheat}}
 
 \subsection{\texttt{soilheat}: Portugal}
