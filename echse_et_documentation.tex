@@ -2,10 +2,12 @@
 
 % packages
 \usepackage{amsmath}
+\usepackage[tableposition=top]{caption}
+\usepackage{float}  % 'H' option for positioning
 \usepackage[margin=0.8in]{geometry}
 \usepackage{graphics}
 \usepackage{graphicx}
-\usepackage{hyperref}
+\usepackage[colorlinks=true]{hyperref}
 \usepackage[round]{natbib}
 \usepackage{pst-node}
 %\usepackage{tabto}
@@ -13,6 +15,7 @@
 %\usepackage[hyphens,obeyspaces]{url}
 
 % settings
+\restylefloat{table}
 \bibliographystyle{plainnat}
 \setkomafont{sectioning}{\normalfont\bfseries}
 \newenvironment{denseitem}{
@@ -23,18 +26,22 @@
 }{
   \end{itemize}
 }
+\setkomafont{caption}{\footnotesize}
+\setkomafont{captionlabel}{\footnotesize\itshape}
+
+%:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
 \title{Evapotranspiration Modeling in ECHSE: Documentation}
 \author{Julius Eberhard}
 
-%::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+%:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
 \begin{document}
 
 \maketitle
 \tableofcontents
 
-%................................................................................
+%...............................................................................
 
 \chapter{Introduction} \label{ch:introduction}
 
@@ -61,12 +68,11 @@ Terms that describe parts of the ECHSE architecture are written in \textsf{sans-
 The physical $et$ models implemented in ECHSE originated from two approaches:
 First, the empirical approach of \citet{makkink57} as simplified by \citet{debruin87} (for applications during the growing season) uses global radiation (explicitly), air pressure (implicitly through the use of the psychrometric `constant'), and temperature (implicitly through the use of the slope of the saturated vapor pressure curve and the psychrometric `constant') as predictors for $et_{pot}$.
 Secondly, the consideration of the net energy available for evaporating water from an open water surface was incorporated into empirical findings by Penman and supplemented with the concept of surface and aerodynamical resistances for uniformly vegetated and completely covered ground by \citet{monteith65} to form the Penman-Monteith model.
-For a nice overview of the Makkink (Makk) and the Penman-Monteith (PM) model and how they are theoretically related, see \citet{debruin87}.
+For a nice overview of the Makkink (Makk, \verb!choice_et! = 1) and the Penman-Monteith (PM, \verb!choice_et! = 11) model and how they are theoretically related, see \citet{debruin87}.
 
-The widely used PM formula was later simplified for rough estimates of single crops by the Food and Agriculture Organization of the United Nations FAO \citep{fao98} (FAO model) and improved for sparse crops by \citet{shuttleworth85} (SW model).
+The widely used PM formula was later simplified for rough estimates of single crops by the Food and Agriculture Organization of the United Nations FAO \citep{fao98} (FAO model, \verb!choice_et! = 12) and improved for sparse crops by \citet{shuttleworth85} (SW model, \verb!choice_et! = 13).
 
-Tab.~\ref{tab:models} gives a very brief overview of the four models.
-It contains keywords describing the way how a type of $et$ is simulated in the respective ECHSE engine.
+The following table gives a very brief overview of the four models.
 \emph{Reference} $et$ quantifies the evapotranspiration from reference surfaces which usually are made of densely growing, clipped grass which always has a sufficient water supply for transpirating at a maximum rate.
 \emph{Potential} $et$ is the maximum possible evapotranspiration from a certain (not necessarily reference) surface which also has no limited water supply.
 \emph{Actual} $et$ takes into account factors that limit the water supply.
@@ -87,8 +93,8 @@ E.\ g., potential $et$ in the Makk model is calculated by multiplying the refere
 %  
 %\end{align}
 %
-\begin{table}[ht]
-  \caption{Overview of $et$ models.}
+\begin{table}[H]
+%  \caption{Overview of $et$ models.}
   \centering
   \begin{tabular*}{1.0\hsize}{llll}
     Model & Reference $et$  & Potential $et$                             & Actual $et$ \\
@@ -134,85 +140,85 @@ Parameters of the \textsf{inputExt} type can be found together with the actual e
 \begin{table}[ht]
   \caption{External input variables, parameters and their usage in the $et$ models.
            For abbreviations, see text.
-           \textbullet: required by engine primarily, $\circ$: required only in cases when some primary input is missing.}
+           \textbullet: required by engine primarily, $\circ$: required only in cases when some primary input is missing.}%
   \scalebox{0.7}{%
-    \begin{tabular*}{0.70\hsize}{|cccc|ccc|r|}
+    \begin{tabular}{|cccc|ccc|lll|}
       \hline
-      \multicolumn{4}{c}{$et_{pot}$}                                & \multicolumn{3}{c}{$et_{act}$}  & \\
-      Makk          & PM            & FAO           & SW            & PM          & FAO & SW          & ECHSE identifier \\
+      \multicolumn{4}{|c}{$et_{pot}$}                                & \multicolumn{3}{|c|}{$et_{act}$}  & & & \\
+      Makk          & PM            & FAO           & SW            & PM          & FAO & SW          & ECHSE identifier                 & description           & see section \\
       \hline
-                    &               &               &               &             &     &             & \textbf{\textsf{inputExt}} \\
-                    & $\circ$       & $\circ$       & $\circ$       &             &     &             & \texttt{alb} \\
-      \textbullet   & \textbullet   & \textbullet   & \textbullet   &             &     &             & \texttt{apress} \\
-                    & \textbullet   &               & \textbullet   &             &     &             & \texttt{cano\_height} \\
-      $\circ$       & $\circ$       & $\circ$       & $\circ$       &             &     &             & \texttt{cloud}* \\
-      $\circ$       & $\circ$       & $\circ$       & $\circ$       &             &     &             & \texttt{doy} \\
-      \textbullet   & \textbullet   & $\circ$       & \textbullet   &             &     &             & \texttt{glorad} \\
-                    & $\circ$       & $\circ$       & $\circ$       &             &     &             & \texttt{glorad\_max} \\
-      $\circ$       & $\circ$       & $\circ$       & $\circ$       &             &     &             & \texttt{hour} \\
-                    & \textbullet   &               & \textbullet   &             &     &             & \texttt{lai} \\
-                    & $\circ$       & $\circ$       & $\circ$       &             &     &             & \texttt{rad\_long} \\
-                    & \textbullet   & \textbullet   & \textbullet   &             &     &             & \texttt{rad\_net} \\
-                    & $\circ$       & $\circ$       & \textbullet   &             &     &             & \texttt{rad\_net\_soil} \\
-                    & \textbullet   & \textbullet   & \textbullet   &             &     &             & \texttt{rhum} \\
-                    & \textbullet   &               & \textbullet   &             &     &             & \texttt{soilheat} \\
-      $\circ$       & $\circ$       & $\circ$       & $\circ$       &             &     &             & \texttt{sundur} \\
-      $\circ$       & $\circ$       & $\circ$       & $\circ$       &             &     &             & \texttt{temp\_max} \\
-      $\circ$       & $\circ$       & $\circ$       & $\circ$       &             &     &             & \texttt{temp\_min} \\
-      \textbullet   & \textbullet   & \textbullet   & \textbullet   &             &     &             & \texttt{temper} \\
-                    &               &               & \textbullet   &             &     &             & \texttt{totalheat} \\
-      $\circ$       & $\circ$       & $\circ$       & $\circ$       &             &     &             & \texttt{utc\_add} \\
-                    &               &               &               &             &     &             & \texttt{wc\_vol\_root} \\
-                    &               &               &               &             &     &             & \texttt{wc\_vol\_top} \\
-                    & \textbullet   & \textbullet   & \textbullet   &             &     &             & \texttt{wind} \\
+                    &               &               &               &             &     &             & \textbf{\textsf{inputExt}}       & & \\
+                    & $\circ$       & $\circ$       & $\circ$       &             &     &             & \texttt{alb}                     & albedo                & \ref{ssec:parest_rad_alb} \\
+      \textbullet   & \textbullet   & \textbullet   & \textbullet   &             &     &             & \texttt{apress}                  & air pressure          & \\
+                    & \textbullet   &               & \textbullet   &             &     &             & \texttt{cano\_height}            & canopy height         & \ref{ssec:parest_veg_canoheight} \\
+      $\circ$       & $\circ$       & $\circ$       & $\circ$       &             &     &             & \texttt{cloud}*                  & cloudiness            & \\
+      $\circ$       & $\circ$       & $\circ$       & $\circ$       &             &     &             & \texttt{doy}                     & day of year           & \\
+      \textbullet   & \textbullet   & $\circ$       & \textbullet   &             &     &             & \texttt{glorad}                  & incoming SW radiation & \\
+                    & $\circ$       & $\circ$       & $\circ$       &             &     &             & \texttt{glorad\_max}             & clear-sky incoming SW radiation & \\
+      $\circ$       & $\circ$       & $\circ$       & $\circ$       &             &     &             & \texttt{hour}                    & hour of day           & \\
+                    & \textbullet   &               & \textbullet   &             &     &             & \texttt{lai}                     & leaf area index       & \ref{ssec:parest_veg_lai} \\
+                    & $\circ$       & $\circ$       & $\circ$       &             &     &             & \texttt{rad\_long}               & incoming LW radiation & \\
+                    & \textbullet   & \textbullet   & \textbullet   &             &     &             & \texttt{rad\_net}                & net incoming radiation & \\
+                    & $\circ$       & $\circ$       & \textbullet   &             &     &             & \texttt{rad\_net\_soil}          & net incoming radiation at soil surface & \\
+                    & \textbullet   & \textbullet   & \textbullet   &             &     &             & \texttt{rhum}                    & relative humidity     & \\
+                    & \textbullet   &               & \textbullet   &             &     &             & \texttt{soilheat}                & soil heat flux        & \\
+      $\circ$       & $\circ$       & $\circ$       & $\circ$       &             &     &             & \texttt{sundur}                  & sunshine duration     & \\
+      $\circ$       & $\circ$       & $\circ$       & $\circ$       &             &     &             & \texttt{temp\_max}               & max air temperature   & \\
+      $\circ$       & $\circ$       & $\circ$       & $\circ$       &             &     &             & \texttt{temp\_min}               & min air temperature   & \\
+      \textbullet   & \textbullet   & \textbullet   & \textbullet   &             &     &             & \texttt{temper}                  & mean air temperature  & \\
+                    &               &               & \textbullet   &             &     &             & \texttt{totalheat}               & total heat flux       & \\
+      $\circ$       & $\circ$       & $\circ$       & $\circ$       &             &     &             & \texttt{utc\_add}                & deviation from UTC zone & \\
+                    &               &               &               &             &     &             & \texttt{wc\_vol\_root}           & water content at root & \\
+                    &               &               &               &             &     &             & \texttt{wc\_vol\_top}            & water content in topsoil & \\
+                    & \textbullet   & \textbullet   & \textbullet   &             &     &             & \texttt{wind}                    & windspeed             & \\
       \hline
-                    &               &               &               &             &     &             & \textbf{\textsf{paramNum}} \\
-                    & \textbullet   &               & \textbullet   &             &     &             & \texttt{bubble} \\
-                    &               & \textbullet   &               &             &     &             & \texttt{crop\_faoref} \\
-      \textbullet   &               &               &               &             &     &             & \texttt{crop\_makk} \\
-      $\circ$       & $\circ$       & $\circ$       & $\circ$       &             &     &             & \texttt{elev} \\
-                    & \textbullet   &               & \textbullet   &             &     &             & \texttt{glo\_half} \\
-      $\circ$       & $\circ$       & $\circ$       & $\circ$       &             &     &             & \texttt{lat} \\
-                    & $\circ$       & $\circ$       & $\circ$       &             &     &             & \texttt{lon} \\
-                    &               &               &               & \textbullet &     & \textbullet & \texttt{par\_stressHum} \\
-                    &               &               &               & \textbullet &     & \textbullet & \texttt{pores\_ind} \\
-                    & \textbullet   &               & \textbullet   &             &     &             & \texttt{res\_leaf\_min} \\
-                    &               &               & \textbullet   &             &     &             & \texttt{soil\_dens} \\
-                    &               &               &               &             &     &             & \texttt{wc\_etmax} \\
-                    &               &               &               &             &     &             & \texttt{wc\_pwp} \\
-                    &               &               &               &             &     &             & \texttt{wc\_res} \\
-                    &               &               &               &             &     &             & \texttt{wc\_sat} \\
-                    &               &               &               &             &     &             & \texttt{wstressmax} \\
-                    &               &               &               &             &     &             & \texttt{wstressmin} \\
+                    &               &               &               &             &     &             & \textbf{\textsf{paramNum}}       & & \\
+                    & \textbullet   &               & \textbullet   &             &     &             & \texttt{bubble}                  & Van Genuchten bubbling pressure & \ref{ssec:parest_soil_bubble} \\
+                    &               & \textbullet   &               &             &     &             & \texttt{crop\_faoref}            & FAO crop factor       & \ref{ssec:parest_veg_cropfaoref} \\
+      \textbullet   &               &               &               &             &     &             & \texttt{crop\_makk}              & Makkink crop factor   & \ref{ssec:parest_veg_cropmakk} \\
+      $\circ$       & $\circ$       & $\circ$       & $\circ$       &             &     &             & \texttt{elev}                    & elevation             & \ref{sec:parest_geo} \\
+                    & \textbullet   &               & \textbullet   &             &     &             & \texttt{glo\_half}               & global radiation for half-max stomatal conductance & \ref{ssec:parest_veg_glohalf} \\
+      $\circ$       & $\circ$       & $\circ$       & $\circ$       &             &     &             & \texttt{lat}                     & latitude              & \ref{sec:parest_geo} \\
+                    & $\circ$       & $\circ$       & $\circ$       &             &     &             & \texttt{lon}                     & longitude             & \ref{sec:parest_geo} \\
+                    &               &               &               & \textbullet &     & \textbullet & \texttt{par\_stressHum}          & vapor pressure stress parameter & \ref{ssec:parest_veg_parstresshum} \\
+                    &               &               &               & \textbullet &     & \textbullet & \texttt{pores\_ind}              & Van Genuchten pore size index & \ref{ssec:parest_soil_poresind} \\
+                    & \textbullet   &               & \textbullet   &             &     &             & \texttt{res\_leaf\_min}          & min stomatal resistance of single leaves & \ref{ssec:parest_veg_resleafmin} \\
+                    &               &               & \textbullet   &             &     &             & \texttt{soil\_dens}              & bulk density of soil  & \ref{ssec:parest_soil_soildens} \\
+                    &               &               &               &             &     &             & \texttt{wc\_etmax}               & water content for max actual $et$ & \ref{ssec:parest_soil_wcetmax} \\
+                    &               &               &               &             &     &             & \texttt{wc\_pwp}                 & water content at permanent wilting point & \ref{ssec:parest_soil_wcpwp} \\
+                    &               &               &               &             &     &             & \texttt{wc\_res}                 & residual water content & \ref{ssec:parest_soil_wcres} \\
+                    &               &               &               &             &     &             & \texttt{wc\_sat}                 & saturated water content & \ref{ssec:parest_soil_wcsat} \\
+                    &               &               &               &             &     &             & \texttt{wstressmax}              & capillary suction at max water stress & \ref{ssec:parest_soil_wstress} \\
+                    &               &               &               &             &     &             & \texttt{wstressmin}              & capillary suction at min water stress & \ref{ssec:parest_soil_wstress} \\
       \hline
-                    &               &               &               &             &     &             & \textbf{\textsf{sharedParamNum}} \\
-      \textbullet   & \textbullet   & \textbullet   & \textbullet   &             &     &             & \texttt{choice\_et} \\
-                    & $\circ$       & $\circ$       & $\circ$       &             &     &             & \texttt{choice\_gloradmax} \\
-                    & \textbullet   &               & \textbullet   &             &     &             & \texttt{choice\_plantDispl} \\
-                    & \textbullet   &               & \textbullet   &             &     &             & \texttt{choice\_rcs} \\
-                    & \textbullet   &               & \textbullet   &             &     &             & \texttt{choice\_roughLen} \\
-                    & \textbullet   &               & \textbullet   &             &     &             & \texttt{drag\_coef} \\
-                    &               &               & \textbullet   &             &     &             & \texttt{eddy\_decay} \\
-                    & $\circ$       & $\circ$       & $\circ$       &             &     &             & \texttt{emis\_a} \\
-                    & $\circ$       & $\circ$       & $\circ$       &             &     &             & \texttt{emis\_b} \\
-                    & \textbullet   &               & \textbullet   &             &     &             & \texttt{ext} \\
-                    & $\circ$       & $\circ$       & \textbullet   &             &     &             & \texttt{f\_day} \\
-                    & $\circ$       & $\circ$       & \textbullet   &             &     &             & \texttt{f\_night} \\
-                    & $\circ$       & $\circ$       & $\circ$       &             &     &             & \texttt{fcorr\_a} \\
-                    & $\circ$       & $\circ$       & $\circ$       &             &     &             & \texttt{fcorr\_b} \\
-                    & \textbullet   &               &               &             &     &             & \texttt{h\_humMeas} \\
-                    & \textbullet   &               &               &             &     &             & \texttt{h\_tempMeas} \\
-                    & \textbullet   & \textbullet   & \textbullet   &             &     &             & \texttt{h\_windMeas} \\
-      $\circ$       & $\circ$       & $\circ$       & $\circ$       &             &     &             & \texttt{radex\_a} \\
-      $\circ$       & $\circ$       & $\circ$       & $\circ$       &             &     &             & \texttt{radex\_b} \\
-                    &               &               & \textbullet   &             &     &             & \texttt{res\_b} \\
-                    & \textbullet   &               & \textbullet   &             &     &             & \texttt{rough\_bare} \\
-                    &               &               & \textbullet   &             &     &             & \texttt{rss\_a} \\
-                    &               &               & \textbullet   &             &     &             & \texttt{rss\_b} \\
+                    &               &               &               &             &     &             & \textbf{\textsf{sharedParamNum}} & & \\
+      \textbullet   & \textbullet   & \textbullet   & \textbullet   &             &     &             & \texttt{choice\_et}              & choice flag for $et$ model & \ref{sec:intro_overview} \\
+                    & $\circ$       & $\circ$       & $\circ$       &             &     &             & \texttt{choice\_gloradmax}       & choice flag for clear-sky radiation & \ref{ssec:parest_rad_radex} \\
+                    & \textbullet   &               & \textbullet   &             &     &             & \texttt{choice\_plantDispl}      & choice flag for displacement height & \\
+                    & \textbullet   &               & \textbullet   &             &     &             & \texttt{choice\_rcs}             & choice flag for bulk canopy surface resistance & \ref{ssec:parest_veg_glohalf} \\
+                    & \textbullet   &               & \textbullet   &             &     &             & \texttt{choice\_roughLen}        & choice flag for roughness length & \\
+                    & \textbullet   &               & \textbullet   &             &     &             & \texttt{drag\_coef}              & drag coefficient      & \ref{sec:parest_aero} \\
+                    &               &               & \textbullet   &             &     &             & \texttt{eddy\_decay}             & eddy diffusivity decay constant & \ref{sec:parest_aero} \\
+                    & $\circ$       & $\circ$       & $\circ$       &             &     &             & \texttt{emis\_a}                 & emissivity parameter a & \ref{ssec:parest_rad_emis} \\
+                    & $\circ$       & $\circ$       & $\circ$       &             &     &             & \texttt{emis\_b}                 & emissivity parameter b & \ref{ssec:parest_rad_emis} \\
+                    & \textbullet   &               & \textbullet   &             &     &             & \texttt{ext}                     & extinction coefficient & \ref{ssec:parest_veg_ext} \\
+                    & $\circ$       & $\circ$       & \textbullet   &             &     &             & \texttt{f\_day}                  & soil heat factor by day & \ref{ssec:parest_rad_f} \\
+                    & $\circ$       & $\circ$       & \textbullet   &             &     &             & \texttt{f\_night}                & soil heat factor by night & \ref{ssec:parest_rad_f} \\
+                    & $\circ$       & $\circ$       & $\circ$       &             &     &             & \texttt{fcorr\_a}                & cloudiness correction parameter a & \ref{ssec:parest_rad_fcorr} \\
+                    & $\circ$       & $\circ$       & $\circ$       &             &     &             & \texttt{fcorr\_b}                & cloudiness correction parameter b & \ref{ssec:parest_rad_fcorr} \\
+                    & \textbullet   &               &               &             &     &             & \texttt{h\_humMeas}              & measurement height of rel humidity & \ref{sec:parest_aero} \\
+                    & \textbullet   &               &               &             &     &             & \texttt{h\_tempMeas}             & measurement height of temperature & \ref{sec:parest_aero} \\
+                    & \textbullet   & \textbullet   & \textbullet   &             &     &             & \texttt{h\_windMeas}             & measurement height of wind speed & \ref{sec:parest_aero} \\
+      $\circ$       & $\circ$       & $\circ$       & $\circ$       &             &     &             & \texttt{radex\_a}                & {\AA}ngstr\"om parameter a & \ref{ssec:parest_rad_radex} \\
+      $\circ$       & $\circ$       & $\circ$       & $\circ$       &             &     &             & \texttt{radex\_b}                & {\AA}ngstr\"om parameter b & \ref{ssec:parest_rad_radex} \\
+                    &               &               & \textbullet   &             &     &             & \texttt{res\_b}                  & mean boundary layer resistance & \ref{sec:parest_aero} \\
+                    & \textbullet   &               & \textbullet   &             &     &             & \texttt{rough\_bare}             & roughness length of bare soil & \ref{sec:parest_aero} \\
+                    &               &               & \textbullet   &             &     &             & \texttt{rss\_a}                  & soil surface resistance parameter a & \ref{ssec:parest_soil_rss} \\
+                    &               &               & \textbullet   &             &     &             & \texttt{rss\_b}                  & soil surface resistance parameter b & \ref{ssec:parest_soil_rss} \\
       \hline
-                    &               &               &               &             &     &             & *\emph{currently not used} \\
+                    &               &               &               &             &     &             & *\emph{currently not used}       & & \\
       \hline
-    \end{tabular*}%
+    \end{tabular}%
   }
   \label{tab:varpar}
 \end{table}
@@ -300,7 +306,7 @@ An evaporation flux was determined from energy balance considerations.
 
 Additionally, soil data were taken from \citet{mroos14}.
 
-%................................................................................
+%...............................................................................
 
 \chapter{Aims} \label{ch:aims}
 
@@ -313,7 +319,7 @@ The aims of my work are:
   \item[--] What might still be to be done? (Ch.~\ref{ch:conclusion})
 \end{itemize}
 
-%................................................................................
+%...............................................................................
 
 \chapter{Parameters: methods and results} \label{ch:parest}
 
@@ -607,13 +613,13 @@ Problem: It might be difficult to find either days when $n=N$ or days when $n=0$
 \textbf{Method 2.}
 Another way of estimating $a_s$ and $b_s$ based on shorter time intervals (in our case, hourly) would be
 \begin{align}
-  a_s + b_s &= \max_{h = 1, ..., 24} \left \{ \frac{R_{inS} (h)}{R_{ex} (h)} \right \}, \label{eq:radex4} \\
-  a_s &= \min_{h = 1, ..., 24} \left \{ \frac{R_{inS} (h)}{R_{ex} (h)} \right \} \label{eq:radex5}
+  a_s + b_s &= \max_{hr = 1, ..., 24} \left \{ \frac{R_{inS} (hr)}{R_{ex} (hr)} \right \}, \label{eq:radex4} \\
+  a_s &= \min_{hr = 1, ..., 24} \left \{ \frac{R_{inS} (hr)}{R_{ex} (hr)} \right \} \label{eq:radex5}
 \end{align}
 %
 with
 \begin{denseitem}
-  \item[] $h$: hour of day.
+  \item[] $hr$: hour of day.
 \end{denseitem}
 %
 For finding unique solutions, both Eqs.~\eqref{eq:radex4} and \eqref{eq:radex5} need to be evaluated because the equations are no longer dependent on $n$.
@@ -621,8 +627,12 @@ The biggest problem of estimating the parameters with subdaily data is that extr
 Taking very low quantiles of the $R_{inS}/R_{ex}$ distribution and applying an upper limit for the max ($a_s + b_s$ can't be greater than 1) would probably avoid estimating $a_s$ as too low and $b_s$ as too high.
 
 \noindent
+\textbf{Note.}
+The {\AA}ngstr\"om parameters are only needed when \verb!choice_gloradmax! = 1, otherwise (\verb!choice_gloradmax! = 2) the clear-sky radiation will be calculated from the elevation $h$ using a simpler approach by the FAO.
+
+\noindent
 \textbf{Portugal.}
-Global radiation was measured hourly at the local weather station in Portugal.
+Global radiation was measured hourly at HS \& NSA.
 Therefore I chose to estimate \verb!radex_a! and \verb!radex_b! with Eqs.~\eqref{eq:radex4} and \eqref{eq:radex5}.
 The $R_{inS}/R_{ex}$ ratio was calculcated for daytime hours between 8:00 and 16:00 local time.
 This assured that only radiation between sunrise and sunset was taken into account for all of the simulation period.
@@ -631,19 +641,14 @@ These choices proved successful in computing clear-sky radiation that didn't exc
 
 \begin{figure}[ht]
   \centering
-  \includegraphics[width=0.5\hsize]{./plot_radex1.pdf}
-  \caption{Histogram of the ratio $R_{inS}/R_{ex}$ for values less than 1 in Portugal.}
-  \label{fig:portugal_radex1}
+  \includegraphics[width=0.9\hsize]{./plot_radex.pdf}
+  \caption{Left: Histogram of the ratio $R_{inS}/R_{ex}$ for values less than 1 in Portugal.
+      Right: $R_{inS}/R_{ex}$ ratio dependent on hour of day.
+      The shift of higher values toward early hours may indicate either a small temporal deviation between the simulated and the actual $R_{ex}$, or a local effect that weakens $R_{inS}$ during afternoon, or both.
+      The dashed line marks the 5-percentile of the total distribution.}
+  \label{fig:portugal_radex}
 \end{figure}
 
-\begin{figure}[ht]
-  \centering
-  \includegraphics[width=0.6\hsize]{./plot_radex2.pdf}
-  \caption{$R_{inS}/R_{ex}$ ratio dependent on hour of day.
-           The shift of higher values toward early hours may indicate either a small temporal deviation between the simulated and the actual $R_{ex}$, or a local effect that weakens $R_{inS}$ during afternoon, or both.
-           The dashed line marks the 5-percentile of the total distribution.}
-  \label{fig:portugal_radex2}
-\end{figure}
 
 \noindent
 \textbf{Morocco.}
@@ -652,9 +657,59 @@ These choices proved successful in computing clear-sky radiation that didn't exc
 \newpage
 \section{Soil hydraulic parameters} \label{sec:parest_soil}
 
-\verb!wc_sat!, \verb!wc_res!, \verb!wc_pwp!, \verb!wc_etmax!, \verb!bubble!, \verb!pores_ind!, \verb!wstressmin!, \verb!wstressmax!, \verb!soil_dens!, \verb!rss_a!, \verb!rss_b!.
+\subsection{Van Genuchten bubbling pressure (\texttt{bubble})} \label{ssec:parest_soil_bubble}
 
-\subsection{Capillary suction at maximum/minimum water stress (\texttt{wstressmax} / \texttt{wstressmin})}
+\textbf{Method.}
+PTF by \citet{rawls85}.
+
+\newpage
+\subsection{Van Genuchten pore size index (\texttt{pores\_ind})} \label{ssec:parest_soil_poresind}
+
+\textbf{Method.}
+PTF by \citet{rawls85}.
+
+\newpage
+\subsection{Soil surface resistance parameters (\texttt{rss\_a}, \texttt{rss\_b})} \label{ssec:parest_soil_rss}
+
+\textbf{Method.}
+\citet{domingo99} give values of $k_{rss,a} = 37.5$, $k_{rss,b} = -1.23$ (Spain).
+
+\newpage
+\subsection{Bulk density of soil (\texttt{soil\_dens})} \label{ssec:parest_soil_soildens}
+
+\textbf{Portugal.}
+Estimated as 1500~kg~m$^{-3}$.
+
+\newpage
+\subsection{Water content for maximum actual evapotranspiration (\texttt{wc\_etmax})} \label{ssec:parest_soil_wcetmax}
+
+\textbf{Basics.}
+Only used in Makk \& FAO models.
+
+\noindent
+\textbf{Method.}
+Set to $0.8 ~ \times$ field capacity, calibration.
+
+\newpage
+\subsection{Water content at permanent wilting point (\texttt{wc\_pwp})} \label{ssec:parest_soil_wcpwp}
+
+\textbf{Method.}
+PTF by \citet{rawls85}: calculate water content at 15000~cm suction.
+
+\newpage
+\subsection{Residual water content (\texttt{wc\_res})} \label{ssec:parest_soil_wcres}
+
+\textbf{Method.}
+PTF by \citet{rawls85}: water content at 0~cm suction.
+
+\newpage
+\subsection{Saturated water content (\texttt{wc\_sat})} \label{ssec:parest_soil_wcsat}
+
+\textbf{Method.}
+PTF by \citet{woesten99}.
+
+\newpage
+\subsection{Capillary suction at max/min water stress (\texttt{wstressmax} / \texttt{wstressmin})} \label{ssec:parest_soil_wstress}
 
 \textbf{Basics.}
 The calculation of stomatal resistance, which is required in the PM and SW models, incorporates two stress factors for vapor stress ($\Phi_{vap}$) and water stress ($\Phi_{wat}$).
@@ -688,7 +743,6 @@ At NSA, for a minimum water content of 0.10~m$^3$~m$^{-3}$, $\psi_{NSA} = 1.4$~M
 
 \noindent
 \textbf{Morocco.}
-
 
 \newpage
 \section{Vegetation parameters} \label{sec:parest_veg}
@@ -754,6 +808,9 @@ At HS and NSA, the crop factor derived from Eq.~\eqref{eq:cropmakk} is 0.51. At 
 \newpage
 \subsection{Extinction coefficient (\texttt{ext})} \label{ssec:parest_veg_ext}
 
+\textbf{Method.}
+?
+
 \newpage
 \subsection{Radiation for half-maximum stomatal conductance (\texttt{glo\_half})} \label{ssec:parest_veg_glohalf}
 
@@ -785,14 +842,21 @@ After integrating $r_{l,act}$ over all leaves, the resulting formula reads
 \textbf{Method.}
 The parameter of interest, $g_{srad}$, can be determined by measurements of the stomatal conductance/resistance of multiple leaves over a broad range of radiation conditions and is assumed to be specific of a species.
 \citet{saugier91} collected some values,
-\begin{denseitem}
-  \item[--] alfalfa: 180~W~m$^{-2}$ \citep{katerji83},
-  \item[--] sunflower: 200--350~W~m$^{-2}$ \citep{berger73},
-  \item[--] Scots pine: 125~W~m$^{-2}$ \citep{lohammar80} and 150~W~m$^{-2}$ \citep{jarvis81},
-  \item[--] apple tree: 50~W~m$^{-2}$ \citep{warrit80},
-  \item[--] oil palm: 30~W~m$^{-2}$ \citep{dufrene89},
-\end{denseitem}
 %
+\begin{table}[H]
+  \centering
+  \begin{tabular}{llr}
+    Species    & $g_{srad}$ (W~m$^{-2}$) \\
+    \hline
+    Alfalfa    & 180 \\
+    Sunflower  & 200--350 \\
+    Scots pine & 125 and 150 \\
+    Apple tree & 50 \\
+    Oil palm   & 30
+  \end{tabular}
+  \label{tab:par_stressHum}
+\end{table}
+\noindent
 which I used for the estimation of $g_{srad}$ through model calibration (?).
 
 \noindent
@@ -881,13 +945,23 @@ with
 \noindent
 \textbf{Method.}
 $a_{vap}$ is a plant-specific parameter. \citet{hanan97} give values for fitted stomatal conductance models for some species of the arid Sahel:
-\begin{denseitem}
-  \item[--] \emph{Guiera senegalensis} (C3 shrub): 0.023373 hPa$^{-1}$,
-  \item[--] \emph{Mitracarpus scaber} (C3 forb): 0.070084 hPa$^{-1}$,
-  \item[--] \emph{Digitaria gayanus}\footnote{This name seems to be used almost only in this paper, not sure which plant they mean, maybe \emph{Andropogon gayanus}.} (C4 grass): 0.017004 hPa$^{-1}$,
-  \item[--] \emph{Pennisetum glaucum} (C4 cereal grass): 0.013346 hPa$^{-1}$.
-\end{denseitem}
 %
+\begin{table}[H]
+  \centering
+  \begin{tabular}{llr}
+    Species                    & Veg.\ type      & $a_{vap}$ (hPa$^{-1}$) \\
+    \hline
+    \emph{Guiera senegalensis} & C3 shrub        & 0.023373 \\
+    \emph{Mitracarpus scaber}  & C3 forb         & 0.070084 \\
+    \emph{Digitaria gayanus}$^\ast$ & C4 grass & 0.017004 \\
+    \emph{Pennisetum glaucum}  & C4 cereal grass & 0.013346
+  \end{tabular}
+  \label{tab:par_stressHum}
+\end{table}
+\noindent
+($^\ast$: This name seems to appear only in this paper, not sure what plant they mean, maybe \emph{Andropogon gayanus}.)
+
+\noindent
 The average value of 0.03~hPa$^{-1}$ was used by \citet{guentner02} in the WASA model.
 
 \noindent
@@ -899,53 +973,64 @@ I used the value from WASA, $a_{vap} = 0.03$~hPa$^{-1}$.
 $a_{vap} = 0.03$~hPa$^{-1}$.
 
 \newpage
-\subsection{Minimum stomatal resistance of single leafs (\texttt{res\_leaf\_min})} \label{ssec:parest_veg_resleafmin}
+\subsection{Minimum stomatal resistance of single leaves (\texttt{res\_leaf\_min})} \label{ssec:parest_veg_resleafmin}
 
 \textbf{Basics.}
-The minimum stomatal resistance of single leafs $r_{l,min}$ is used in the calculation of the actual stomatal resistance $r_{l,act}$.
+The minimum stomatal resistance of single leaves $r_{l,min}$ is used in the calculation of the actual stomatal resistance $r_{l,act}$.
 See Sec.~\ref{ssec:parest_veg_glohalf} for the details.
 
 \noindent
 \textbf{Method.}
-Similarly to $g_{srad}$ (Sec.~\ref{ssec:parest_veg_glohalf}), \citet{saugier91} give values for some species (rather for conductance! ...),
-\begin{denseitem}
-  \item[--] alfalfa: 0.06~s~mm$^{-1}$ \citep{katerji83},
-  \item[--] sunflower: xxxxx \citep{berger73},
-  \item[--] Scots pine: xxxxxx \citep{lohammar80} and 150~W~m$^{-2}$ \citep{jarvis81},
-  \item[--] apple tree: xxxxxxxx \citep{warrit80},
-  \item[--] oil palm: xxxxx \citep{dufrene89},
-\end{denseitem}
+Similarly to $g_{srad}$ (Sec.~\ref{ssec:parest_veg_glohalf}), \citet{saugier91} present values of the maximum stomatal conductance $g_{smax}$ (taken from different sources) for some species:
 %
-which I used for the estimation of $g_{srad}$ through model calibration (?).
+\begin{table}[H]
+  \centering
+  \begin{tabular}{lrr}
+               & $g_{smax}$    & $r_{l,min} = g_{smax}^{-1}$ \\
+    Species    & (m~s$^{-1}$) & (s~m$^{-1}$) \\
+    \hline
+    Alfalfa    & 0.0170      & 58.8 \\
+    Sunflower  & 0.0083      & 120.5 \\
+    Oak forest & 0.0050      & 200.0 \\
+    Chestnut   & 0.0076      & 131.6 \\
+    Oil palm   & 0.0083      & 120.5
+  \end{tabular}
+  \label{tab:res_leaf_min}
+\end{table}
+\noindent
+\citet{guentner02} gives similar values for different vegetation types, ranging from 80~s~m$^{-1}$ for small crops to 200~s~m$^{-1}$ for non-moist forests.
 
+\noindent
+\textbf{Portugal.}
+For HS \& NSA, the parameter was set to 150~s~m$^{-1}$, which is the value given by \citet{guentner02} for grassland with trees.
+For the tower, as cork oak canopies are regarded in the effective source height of the PM \& SW models, it was set to 200~s~m$^{-1}$ according to the sources cited above.
 
-%................................................................................
+%...............................................................................
 
 \chapter{Comparison of evapotranspiration models} \label{ch:modelcomp}
 
-%................................................................................
+%...............................................................................
 
 \chapter{Sensitivity analysis} \label{ch:sensana}
 
-%................................................................................
+%...............................................................................
 
 \chapter{Evaluation of ECHSE methods} \label{ch:methodcomp}
 
-\newpage
-\section{Global radiation \texttt{glorad}}
+\section{Global radiation (\texttt{glorad})}
 
 \subsection{\texttt{glorad}: Portugal}
 
 \begin{figure}[ht]
   \centering
-  \includegraphics[width=0.8\hsize]{./plot_glorad_compare_portugal_HS_2014-06-26_2014-07-01.pdf}
+  \includegraphics[width=0.5\hsize]{./plot_glorad_compare_portugal_HS_2014-06-26_2014-07-01.pdf}
   \caption{.}
   \label{fig:portugal_HS_glorad1}
 \end{figure}
 
 \begin{figure}[ht]
   \centering
-  \includegraphics[width=0.8\hsize]{./plot_glorad_compare_portugal_NSA_2014-05-13_2014-05-20.pdf}
+  \includegraphics[width=0.5\hsize]{./plot_glorad_compare_portugal_NSA_2014-05-13_2014-05-20.pdf}
   \caption{.}
   \label{fig:portugal_NSA_glorad1}
 \end{figure}
@@ -954,45 +1039,45 @@ which I used for the estimation of $g_{srad}$ through model calibration (?).
 \subsection{\texttt{glorad}: Morocco}
 
 \newpage
-\section{Net incoming radiation \texttt{rad\_net}}
+\section{Net incoming radiation (\texttt{rad\_net})}
 
 \subsection{\texttt{rad\_net}: Portugal}
 
 \begin{figure}[ht]
   \centering
-  \includegraphics[width=0.8\hsize]{./plot_rad_net_compare_portugal_HS_2014-04-29_2014-07-01.pdf}
+  \includegraphics[width=0.5\hsize]{./plot_rad_net_compare_portugal_HS_2014-04-29_2014-07-01.pdf}
   \caption{.}
   \label{fig:portugal_HS_radnet1}
 \end{figure}
 
 \begin{figure}[ht]
   \centering
-  \includegraphics[width=0.8\hsize]{./plot_rad_net_compare_portugal_NSA_2014-04-29_2014-07-01.pdf}
+  \includegraphics[width=0.5\hsize]{./plot_rad_net_compare_portugal_NSA_2014-04-29_2014-07-01.pdf}
   \caption{.}
   \label{fig:portugal_NSA_radnet1}
 \end{figure}
 
 \newpage
-\section{Soilheat flux \texttt{soilheat}}
+\section{Soilheat flux (\texttt{soilheat})}
 
 \subsection{\texttt{soilheat}: Portugal}
 
 \begin{figure}[ht]
   \centering
-  \includegraphics[width=0.8\hsize]{./plot_soilheat_compare_portugal_HS_2014-06-26_2014-07-01.pdf}
+  \includegraphics[width=0.5\hsize]{./plot_soilheat_compare_portugal_HS_2014-06-26_2014-07-01.pdf}
   \caption{.}
   \label{fig:portugal_HS_soilheat1}
 \end{figure}
 
 \begin{figure}[ht]
   \centering
-  \includegraphics[width=0.8\hsize]{./plot_soilheat_compare_portugal_NSA_2014-05-13_2014-05-20.pdf}
+  \includegraphics[width=0.5\hsize]{./plot_soilheat_compare_portugal_NSA_2014-05-13_2014-05-20.pdf}
   \caption{.}
   \label{fig:portugal_NSA_soilheat1}
 \end{figure}
 
 
-%................................................................................
+%...............................................................................
 
 \chapter{Results: overview} \label{ch:results}
 
@@ -1012,7 +1097,7 @@ An overview of the parameters is given for the \textsf{paramNum} group (object-s
 
 \input{portugalNSA_inputExt}
 
-%................................................................................
+%...............................................................................
 
 \chapter{Conclusion} \label{ch:conclusion}
 
@@ -1031,10 +1116,10 @@ with
   \item[] $x_\text{water}$: mass fraction of water in the soil, in m$^3$~m$^{-3}$.
 \end{denseitem}
 
-%................................................................................
+%...............................................................................
 
 \bibliography{./jubib}
 
-%................................................................................
+%...............................................................................
 
 \end{document}
