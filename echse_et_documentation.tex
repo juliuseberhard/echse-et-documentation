@@ -140,7 +140,8 @@ Parameters of the \textsf{inputExt} type can be found together with the actual e
 \begin{table}[ht]
   \caption{External input variables, parameters and their usage in the $et$ models.
            For abbreviations, see text.
-           \textbullet: required by engine primarily, $\circ$: required only in cases when some primary input is missing.}%
+           \textbullet: required by engine primarily, $\circ$: required only in cases when some primary input is missing.
+           TABLE IS NOT COMPLETE FOR $et_{act}$ YET!}%
   \scalebox{0.7}{%
     \begin{tabular}{|cccc|ccc|lll|}
       \hline
@@ -168,8 +169,8 @@ Parameters of the \textsf{inputExt} type can be found together with the actual e
       \textbullet   & \textbullet   & \textbullet   & \textbullet   &             &     &             & \texttt{temper}                  & mean air temperature  & \\
                     &               &               & \textbullet   &             &     &             & \texttt{totalheat}               & total heat flux       & \\
       $\circ$       & $\circ$       & $\circ$       & $\circ$       &             &     &             & \texttt{utc\_add}                & deviation from UTC zone & \\
-                    &               &               &               &             &     &             & \texttt{wc\_vol\_root}           & water content at root & \\
-                    &               &               &               &             &     &             & \texttt{wc\_vol\_top}            & water content in topsoil & \\
+                    &               &               &               & \textbullet &     & \textbullet & \texttt{wc\_vol\_root}           & water content at root & \\
+                    &               &               &               &             &     & \textbullet & \texttt{wc\_vol\_top}            & water content in topsoil & \\
                     & \textbullet   & \textbullet   & \textbullet   &             &     &             & \texttt{wind}                    & windspeed             & \\
       \hline
                     &               &               &               &             &     &             & \textbf{\textsf{paramNum}}       & & \\
@@ -242,7 +243,7 @@ The data for both stations include
   \item[--] incoming long-wave radiation,
   \item[--] outgoing long-wave radiation,
   \item[--] air temperature $TA$ (\verb!temp!),
-  \item[--] soil heat flux,
+  \item[--] soil heat flux $G$ (\verb!soilheat!),
   \item[--] soil moisture content,
   \item[--] sensible heat flux,
   \item[--] latent heat flux,
@@ -252,7 +253,7 @@ The data for both stations include
 \end{denseitem}
 %
 they were recorded hourly.
-An evaporation flux was determined through the use of the Bowen ratio, i.\ e.\ the ratio of sensible to latent heat flux.
+An evaporation flux was determined through the use of the Bowen ratio, i.\ e.\ the ratio of sensible to latent heat flux, see Eq.~\eqref{eq:bowen}.
 
 Additional meteorological data (measured at a height of 20~m) come from an eddy covariance tower (build by \emph{LI-COR Environmental}) in the area (NSB\_TOWER in Fig.~\ref{fig:map_coruche}).
 They include
@@ -266,22 +267,36 @@ They include
   \item[--] atmospheric pressure,
   \item[--] wind speed,
   \item[--] wind direction,
-  \item[--] sensible heat flux, including quality flag (Foken \& Mauder),
-  \item[--] latent heat flux, including quality flag;
+  \item[--] sensible heat flux $H$, including quality flag (Foken \& Mauder),
+  \item[--] latent heat flux $\lambda E$, including quality flag;
 \end{denseitem}
 %
 they were recorded half-hourly.
+The evapotranspiration rate $E = et / \Delta t$ could be calculated as
+\begin{align} \label{eq:bowen}
+  E = \frac{1}{\lambda} \left( \frac{R_{net} + G}{1 + B} \right)
+\end{align}
+%
+with
+\begin{denseitem}
+  \item[] $\lambda$: volumetric (!) latent heat of water vaporization, $2.43 \times 10^9$~J~m$^{-3}$,
+  \item[] $R_{net}$: net incoming SW and LW radiation, in W~m$^{-2}$,
+  \item[] $G$: soil heat flux, in W~m$^{-2}$,
+  \item[] $B = H / \lambda E$: Bowen ratio, no unit.
+\end{denseitem}
+%
+This simplified approach \citep{taylor72} assumes a local energy balance without storage changes or heat advection.
 
 \begin{figure}[t]
   \centering
-  \includegraphics[width=0.7\hsize]{./map_coruche}
+  \includegraphics[width=0.7\hsize]{./fig/map_coruche}
   \caption{Satellite image (\emph{Google Maps}) of the study area in Portugal with locations of the field stations (HS, NSA) and the eddy-covariance tower (NSB\_TOWER).}
   \label{fig:map_coruche}
 \end{figure}
 
 \begin{figure}[t]
   \centering
-  \includegraphics[width=1.0\hsize]{./sw_scheme}
+  \includegraphics[width=1.0\hsize]{./fig/sw_scheme}
   \caption{SW model setup at eddy tower site (left) and at HS \& NSA (right).
            Screen height 20~m (left) and 2~m (right).
            $H$: sensible heat flux, $\lambda E$: latent heat flux, $a$: .}
@@ -374,7 +389,7 @@ For Morocco, $\varphi = 31.50^\circ$~N, $L_m = 8.14^\circ$~W, and $h = 464$~m~a.
 \subsection{Albedo (\texttt{alb})} \label{ssec:parest_rad_alb}
 
 \textbf{Basics.}
-The albedo $\mu$ (\verb!alb!) is defined as
+The albedo $\mu$ (\verb!alb!) is used in the calculation of the net incoming radiation $R_{net}$ and defined as
 \begin{align*}
   \mu = \frac{R_{outS}}{R_{inS}}
 \end{align*}
@@ -392,15 +407,13 @@ The albedo of a surface can change over time and is supplied as a time series in
 
 \noindent
 \textbf{Portugal.}
-The measurements of the short-wave radiation components at the stations HS and NSA comprised hourly time series between April 7 and August 4, 2014.
-The albedo was derived as a total mean of the hourly $R_{outS}/R_{inS}$ ratio.
-Only records of times between 8:00 and 16:00 were used for the estimation.
-Although the observations showed a distinct development over time (Fig.~\ref{fig:portugal_alb}), I could not conclude the amplitude of yearly fluctuations from the observations and therefore used the calculated mean as a constant value over the whole year, $\mu = 0.066$.
+Since data of $R_{net}$ were available for HS and the eddy covariance tower station, $\mu$ didn't need to be estimated.
+Just for completeness, the calculated albedo from observed radiation components at HS on a daily basis is shown in Fig.~\ref{fig:portugal_alb} with a mean of 0.07.
 
 \begin{figure}[ht]
   \centering
-  \includegraphics[width=0.6\hsize]{./plot_alb.pdf}
-  \caption{$R_{outS}/R_{inS}$ ratio, daily mean. Total mean: $\mu = 0.0816$.}
+  \includegraphics[width=0.6\hsize]{./fig/plot_alb.pdf}
+  \caption{$R_{outS}/R_{inS}$ ratio, daily mean. Total mean: $\mu \approx 0.07$.}
   \label{fig:portugal_alb}
 \end{figure}
 
@@ -481,8 +494,8 @@ Although some observation-derived values come near the predicted values at noon 
 
 \begin{figure}[ht]
   \centering
-  \includegraphics[width=0.8\hsize]{./plot_emis_both_HS.pdf}
-  \caption{Observation-derived vs. model-predicted net emissivity at HS station.
+  \includegraphics[width=0.8\hsize]{./fig/plot_emis_both_HS.pdf}
+  \caption{Observation-derived vs.\ model-predicted net emissivity at HS station.
            As $f \approx 1$ was assumed by choosing $0.9 < f \leq 1$, Eq.~\eqref{eq:emis2} is equivalent to $\varepsilon \approx - R_{netL} / (\sigma (TA + 273.15~\text{K})^4)$ with observed $R_{netL}$ and $TA$.}
   \label{fig:portugal_emis_both}
 \end{figure}
@@ -511,7 +524,7 @@ with
 
 \noindent
 \textbf{Portugal.}
-Since the data didn't include measurements of $R_{net}$, I used the results of internally calculated values of $R_{net}$ and measurements of $G_{soil}$ for calculating $f_{day}$, $f_{night}$ hourly from Eqs.~\eqref{eq:f1}, \eqref{eq:f2}.
+I used the observed net radiation $R_{net}$ and measurements of $G_{soil}$ for calculating $f_{day}$, $f_{night}$ hourly from Eqs.~\eqref{eq:f1}, \eqref{eq:f2}.
 The distinction of the time series into daytime and nighttime was made using the \emph{RAtmosphere::suncalc} procedure by Gionata Biavati, which provided sunrise and sunset times for the study site.
 Averaging over all hours gave the results.
 
@@ -558,13 +571,13 @@ Shuttleworth gives values of $f_a = 1.35$, $f_b = -0.35$ for arid conditions and
 First, the cloudiness correction $f$ was estimated from $R_{netL}$, $TA$, and $\varepsilon$ where the net emissivity was calculated following both methods described in Sec.~\ref{ssec:parest_rad_emis}, i.~e.\ Eq.~\eqref{eq:emis1} \citep{brunt32} and Eq.~\eqref{eq:emis3} \citep{idso69}.
 The parameters $f_a$, $f_b$ could then be estimated through an adapted regression method:
 The condition $f_a + f_b = 1$ was not possible to be fulfilled by a linear regression of $f$ over $R_{inS}/R_{inS,cs}$ (the latter of which was derived by means of the previously estimated {\AA}ngstr\"om parameters).
-In order to get a model close to the data, I did a linear regression of the data (although the conditional mean didn't behave linearly and therefore did not fulfill the assumptions for a valid linear regression) and used the intersect (the value of $f$ at $R_{inS} = 0$) as estimation of $f_b$.
+In order to get a model close to the data, I did a linear regression of the data (although the conditional mean didn't behave linearly and therefore did not fulfill the assumptions for a valid linear regression) and used the intersect (the value of $f$ at $R_{inS} = 0$) as an estimate of $f_b$.
 $f_a$ was then determined from the condition above.
 Fig.~\ref{fig:portugal_fcorr} shows the calculated cloudiness correction and the adapted regression models for both emissivity methods as well as the suggested model by Shuttleworth in \citet{maidment93}.
 
-\begin{figure}[ht]
+\begin{figure}[H]
   \centering
-  \includegraphics[width=0.6\hsize]{./plot_fcorr_both.pdf}
+  \includegraphics[width=0.6\hsize]{./fig/plot_fcorr_both.pdf}
   \caption{Adapted regression models (lines) of hourly $f$ data (points) calculated with Eq.~\eqref{eq:emis2} for the estimation of $f_a$, $f_b$.
            See text for the regression method.
            Upper: emissivity calculated after \citet{brunt32} with $\varepsilon_a = 0.34$, $\varepsilon_b = -0.14$; lower: emissivity calculated after \citet{idso69}.}
@@ -639,9 +652,9 @@ This assured that only radiation between sunrise and sunset was taken into accou
 For the determination of reasonable values I chose the lower 5-percentile of the $R_{inS}/R_{ex}$ distribution as the minimum and the maximum value of $\{R_{inS}/R_{ex} < 1\}$ as the maximum over the whole period in which $R_{inS}$ observations were available.
 These choices proved successful in computing clear-sky radiation that didn't exceed the observed global radiation and therefore fulfilled the physical conditions.
 
-\begin{figure}[ht]
+\begin{figure}[H]
   \centering
-  \includegraphics[width=0.9\hsize]{./plot_radex.pdf}
+  \includegraphics[width=0.9\hsize]{./fig/plot_radex.pdf}
   \caption{Left: Histogram of the ratio $R_{inS}/R_{ex}$ for values less than 1 in Portugal.
       Right: $R_{inS}/R_{ex}$ ratio dependent on hour of day.
       The shift of higher values toward early hours may indicate either a small temporal deviation between the simulated and the actual $R_{ex}$, or a local effect that weakens $R_{inS}$ during afternoon, or both.
@@ -1023,14 +1036,14 @@ For the tower, as cork oak canopies are regarded in the effective source height 
 
 \begin{figure}[ht]
   \centering
-  \includegraphics[width=0.5\hsize]{./plot_glorad_compare_portugal_HS_2014-06-26_2014-07-01.pdf}
+  \includegraphics[width=0.5\hsize]{./fig/plot_glorad_compare_portugal_HS_2014-06-26_2014-07-01.pdf}
   \caption{.}
   \label{fig:portugal_HS_glorad1}
 \end{figure}
 
 \begin{figure}[ht]
   \centering
-  \includegraphics[width=0.5\hsize]{./plot_glorad_compare_portugal_NSA_2014-05-13_2014-05-20.pdf}
+  \includegraphics[width=0.5\hsize]{./fig/plot_glorad_compare_portugal_NSA_2014-05-13_2014-05-20.pdf}
   \caption{.}
   \label{fig:portugal_NSA_glorad1}
 \end{figure}
@@ -1045,14 +1058,14 @@ For the tower, as cork oak canopies are regarded in the effective source height 
 
 \begin{figure}[ht]
   \centering
-  \includegraphics[width=0.5\hsize]{./plot_rad_net_compare_portugal_HS_2014-04-29_2014-07-01.pdf}
+  \includegraphics[width=0.5\hsize]{./fig/plot_rad_net_compare_portugal_HS_2014-04-29_2014-07-01.pdf}
   \caption{.}
   \label{fig:portugal_HS_radnet1}
 \end{figure}
 
 \begin{figure}[ht]
   \centering
-  \includegraphics[width=0.5\hsize]{./plot_rad_net_compare_portugal_NSA_2014-04-29_2014-07-01.pdf}
+  \includegraphics[width=0.5\hsize]{./fig/plot_rad_net_compare_portugal_NSA_2014-04-29_2014-07-01.pdf}
   \caption{.}
   \label{fig:portugal_NSA_radnet1}
 \end{figure}
@@ -1064,14 +1077,14 @@ For the tower, as cork oak canopies are regarded in the effective source height 
 
 \begin{figure}[ht]
   \centering
-  \includegraphics[width=0.5\hsize]{./plot_soilheat_compare_portugal_HS_2014-06-26_2014-07-01.pdf}
+  \includegraphics[width=0.5\hsize]{./fig/plot_soilheat_compare_portugal_HS_2014-06-26_2014-07-01.pdf}
   \caption{.}
   \label{fig:portugal_HS_soilheat1}
 \end{figure}
 
 \begin{figure}[ht]
   \centering
-  \includegraphics[width=0.5\hsize]{./plot_soilheat_compare_portugal_NSA_2014-05-13_2014-05-20.pdf}
+  \includegraphics[width=0.5\hsize]{./fig/plot_soilheat_compare_portugal_NSA_2014-05-13_2014-05-20.pdf}
   \caption{.}
   \label{fig:portugal_NSA_soilheat1}
 \end{figure}
